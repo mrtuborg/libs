@@ -28,6 +28,7 @@ void* udpListenerThread (void* user)
 	if (result==err_timeout) printf("udpListenerThread exited by timeout\n");
 	else printf("udpListenerThread exited by received data event\n");
     }*/
+    return user;
 }
 
 
@@ -51,7 +52,7 @@ errType udpAction::waitRecvEvent()
 	errType result=err_not_init;
 
 //	if (verbose_level) printf("Wait for receiving answer\n");
-	errType ret=(errType)pthread_join(listenerThread, NULL);
+	result=(errType)pthread_join(listenerThread, NULL);
 	//printf("ret=%d\n",ret);
 	return result;
 }
@@ -138,8 +139,8 @@ errType udpAction::receiveEvent()
     BYTE event=0;
     size_t sz[1];
     *sz=1024; // what if greater?
-    bool listen_mode=actionType;
     
+
     BYTE* data;
     
     result=udpPort->udp_async_process(&event,10,0);
@@ -183,7 +184,8 @@ errType udpAction::processAction()
 	    Command=0;
 	    
 	    udpPort->open_port(true);
-	    int ret=pthread_create(&listenerThread, NULL, udpListenerThread, (void*) this);
+	    //int ret=
+	    	pthread_create(&listenerThread, NULL, udpListenerThread, (void*) this);
 	    waitRecvEvent();
 	    
 	    udpPort->close_port();
