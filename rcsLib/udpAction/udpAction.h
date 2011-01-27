@@ -30,3 +30,5 @@ class udpAction
 	const void* getParamPtr(WORD offset=0);
 	DWORD getParamLength();
 };
+
+extern void* udpListenerThread (void* user);
