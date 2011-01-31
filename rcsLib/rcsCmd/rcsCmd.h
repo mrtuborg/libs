@@ -33,7 +33,7 @@ public:
  const void* popParam(OrtsType);
  
  errType encode(const BYTE* dataBlock);
- errType encode(BYTE funcId, DWORD len=0, const BYTE* data=0);
+ errType encode(BYTE funcId, DWORD len=0, const void* data=0);
  
  
  errType makeSign();

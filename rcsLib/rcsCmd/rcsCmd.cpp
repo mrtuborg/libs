@@ -186,7 +186,7 @@ errType rcsCmd::pushParam(OrtsType type, const void* param)
 	return result;
 }
 
-errType rcsCmd::encode(BYTE func_num, DWORD par_length, const BYTE* data)
+errType rcsCmd::encode(BYTE func_num, DWORD par_length, const void* data)
 {
 	errType result=err_not_init;
 	
