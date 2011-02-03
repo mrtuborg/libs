@@ -1,7 +1,7 @@
 
 typedef struct rcsCmd_type {
     BYTE func_id;
-    DWORD func_paramsLength;
+    WORD func_paramsLength;
     void *func_params;
     WORD crc16_signature;
 
