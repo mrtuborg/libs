@@ -23,7 +23,7 @@ public:
  DWORD getCmdLength();
  
  WORD get_crc_sign();
- const void* get_func_paramsPtr(DWORD offset=0);
+ const void* get_func_paramsPtr(WORD offset=0);
 
 
  void dbgPrint();
@@ -33,7 +33,7 @@ public:
  const void* popParam(OrtsType);
  
  errType encode(const BYTE* dataBlock);
- errType encode(BYTE funcId, DWORD len=0, const void* data=0);
+ errType encode(BYTE funcId, WORD len=0, const void* data=0);
  
  
  errType makeSign();

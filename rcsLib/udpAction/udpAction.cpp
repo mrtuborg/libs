@@ -126,7 +126,7 @@ errType udpAction::sendAction()
 	// data[Command->getCmdLength()-2]+=1;
 	//---
 	result=udpPort->sendData(remote_ip, data, Command->getCmdLength());
-	delete data;
+	delete []data;
 	udpPort->close_port();
     }        
     
@@ -152,7 +152,7 @@ errType udpAction::receiveEvent()
 	
 	if (Command==0) Command=new rcsCmd;
 	Command->encode(data);
-	delete data;
+	delete []data;
     }
     
     //if (result==err_timeout) printf("timeout\n");
