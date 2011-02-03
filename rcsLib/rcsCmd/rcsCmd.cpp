@@ -255,8 +255,8 @@ bool rcsCmd::checkSign()
     test_sign=test_cmd.get_crc_sign();
     
 ///*    if (verbose_level) {
-	printf("Расчётная подпись: %.4X\n",test_sign);
-	printf("Принятая подпись: %.4X\n",this->get_crc_sign());
+//	printf("Расчётная подпись: %.4X\n",test_sign);
+//	printf("Принятая подпись: %.4X\n",this->get_crc_sign());
 //    }
 //  */  
     if (test_sign==get_crc_sign()) result=true;
