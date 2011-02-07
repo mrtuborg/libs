@@ -16,11 +16,11 @@ public:
  ~rcsCmd();
 
  BYTE get_func_id();
- DWORD get_func_paramsLength();
+ WORD get_func_paramsLength();
  
- DWORD getDataPos();
- DWORD getSignPos();
- DWORD getCmdLength();
+ WORD getDataPos();
+ WORD getSignPos();
+ WORD getCmdLength();
  
  WORD get_crc_sign();
  const void* get_func_paramsPtr(WORD offset=0);

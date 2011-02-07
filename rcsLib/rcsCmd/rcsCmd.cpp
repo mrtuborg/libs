@@ -116,17 +116,19 @@ const void* rcsCmd::popParam(OrtsType type)
 	}
 	
 	//printf("pop size=%d\n",size);
-	result=new BYTE[size];
-	
-	memcpy(result, dataPtr, size);
-	BYTE* offset=((BYTE*)cmd->func_params)+size;
-	if (size>getCmdLength()) {
-	    cmd->func_params=0;
-	    cmd->func_paramsLength=0;
-	} else {
-	    cmd->func_params=offset;
-	    cmd->func_paramsLength-=size;
-	}
+	if (size < cmd->func_paramsLength) {
+		result=new BYTE[size];
+		memcpy(result, dataPtr, size);
+		BYTE* offset=((BYTE*)cmd->func_params)+size;
+		if (size>getCmdLength()) {
+			cmd->func_params=0;
+			cmd->func_paramsLength=0;
+		} else {
+			cmd->func_params=offset;
+			cmd->func_paramsLength-=size;
+		}
+	} else result=0;
+
 	return result;
 }
 
@@ -204,23 +206,23 @@ errType rcsCmd::encode(BYTE func_num, WORD par_length, const void* data)
 }
 
 
-DWORD rcsCmd::get_func_paramsLength()
+WORD rcsCmd::get_func_paramsLength()
 {
      return cmd->func_paramsLength;
 }
 
 
-DWORD rcsCmd::getDataPos()
+WORD rcsCmd::getDataPos()
 {
      return sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength);
 }
   
-DWORD rcsCmd::getSignPos()
+WORD rcsCmd::getSignPos()
 {
      return cmd->func_paramsLength+sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength);
 }
 
-DWORD rcsCmd::getCmdLength()
+WORD rcsCmd::getCmdLength()
 {
      return cmd->func_paramsLength+sizeof(cmd->func_id)+sizeof(cmd->crc16_signature)+sizeof(cmd->func_paramsLength);
 }
