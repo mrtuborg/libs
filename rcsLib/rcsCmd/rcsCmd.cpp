@@ -114,9 +114,9 @@ const void* rcsCmd::popParam(OrtsType type)
 	    //printf ("scalar\n") ;
 	    size=lenOrtsTypes[type];
 	}
-	
+	//printf("popParam: size=%d, func_paramsLength=%d\n",size , cmd->func_paramsLength);
 	//printf("pop size=%d\n",size);
-	if (size < cmd->func_paramsLength) {
+	if (size <= cmd->func_paramsLength) { // we reduces func_paramsLength in every pop
 		result=new BYTE[size];
 		memcpy(result, dataPtr, size);
 		BYTE* offset=((BYTE*)cmd->func_params)+size;
@@ -125,9 +125,12 @@ const void* rcsCmd::popParam(OrtsType type)
 			cmd->func_paramsLength=0;
 		} else {
 			cmd->func_params=offset;
-			cmd->func_paramsLength-=size;
+			cmd->func_paramsLength-=size;// we reduces func_paramsLength in every pop
 		}
-	} else result=0;
+	} else {
+
+		result=0;
+	}
 
 	return result;
 }

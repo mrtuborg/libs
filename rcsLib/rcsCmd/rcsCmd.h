@@ -31,7 +31,7 @@ public:
  errType eraseParams();
  errType pushParam(OrtsType, const void*);
  const void* popParam(OrtsType);
- 
+
  errType encode(const BYTE* dataBlock);
  errType encode(BYTE funcId, WORD len=0, const void* data=0);
  
