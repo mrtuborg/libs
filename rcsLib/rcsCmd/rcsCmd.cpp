@@ -67,7 +67,7 @@ errType rcsCmd::encode(const BYTE* data)
 	
 	cmd->func_id=data[0];
 	cmd->func_paramsLength=*(WORD*)(data+sizeof(cmd->func_id));
-	
+
 	if (cmd->func_paramsLength>0) {
 	    cmd->func_params=new BYTE[cmd->func_paramsLength];                                                            
 	    memcpy(cmd->func_params, data+getDataPos(), cmd->func_paramsLength);                                              
