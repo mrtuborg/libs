@@ -1,1 +1,1 @@
-lib_subdirs	:= rcsCmd
+lib_subdirs	:= rcsCmd udpAction

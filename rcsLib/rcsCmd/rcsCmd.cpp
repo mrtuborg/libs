@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include "extra/ortsTypes/ortsTypes.h"
+#include <extra/ortsTypes/ortsTypes.h>
 #include "rcsCmd.h"
-#include "math/crc/crc16.h"
+#include <math/crc/crc16.h>
 
 rcsCmd::rcsCmd(BYTE serviceId, BYTE funcId)
 {
@@ -37,7 +37,7 @@ void rcsCmd::dbgPrint()
   printf(", Параметры [");
   if (cmd->func_paramsLength==0) printf (" ОТСУТСТВУЮТ ");
   else {
-	for (DWORD i=0; i<cmd->func_paramsLength; i++){
+	for (WORD i=0; i<cmd->func_paramsLength; i++){
 	    printf("%.2X ",*((BYTE*)cmd->func_params+i));
 	}
   }
@@ -66,8 +66,8 @@ errType rcsCmd::encode(const BYTE* data)
 	errType result=err_not_init;
 	
 	cmd->func_id=data[0];
-	cmd->func_paramsLength=*(DWORD*)(data+sizeof(cmd->func_id));
-	
+	cmd->func_paramsLength=*(WORD*)(data+sizeof(cmd->func_id));
+
 	if (cmd->func_paramsLength>0) {
 	    cmd->func_params=new BYTE[cmd->func_paramsLength];                                                            
 	    memcpy(cmd->func_params, data+getDataPos(), cmd->func_paramsLength);                                              
@@ -114,19 +114,24 @@ const void* rcsCmd::popParam(OrtsType type)
 	    //printf ("scalar\n") ;
 	    size=lenOrtsTypes[type];
 	}
-	
+	//printf("popParam: size=%d, func_paramsLength=%d\n",size , cmd->func_paramsLength);
 	//printf("pop size=%d\n",size);
-	result=new BYTE[size];
-	
-	memcpy(result, dataPtr, size);
-	BYTE* offset=((BYTE*)cmd->func_params)+size;
-	if (size>getCmdLength()) {
-	    cmd->func_params=0;
-	    cmd->func_paramsLength=0;
+	if (size <= cmd->func_paramsLength) { // we reduces func_paramsLength in every pop
+		result=new BYTE[size];
+		memcpy(result, dataPtr, size);
+		BYTE* offset=((BYTE*)cmd->func_params)+size;
+		if (size>getCmdLength()) {
+			cmd->func_params=0;
+			cmd->func_paramsLength=0;
+		} else {
+			cmd->func_params=offset;
+			cmd->func_paramsLength-=size;// we reduces func_paramsLength in every pop
+		}
 	} else {
-	    cmd->func_params=offset;
-	    cmd->func_paramsLength-=size;
+
+		result=0;
 	}
+
 	return result;
 }
 
@@ -145,17 +150,14 @@ errType rcsCmd::pushParam(OrtsType type, const void* param)
 	} else {
 	    size=lenOrtsTypes[type];
 	}
-/*	
+/*
 	printf("size=%d\n",size);
-	printf("param=[");
-	for (int i=0; i< size; i++) printf(" %.2X", ((BYTE*)param)[i]);
-	printf("]\n");
-	
-	printf("old param length=%d\n",cmd->func_paramsLength);
-*/	
+*/
 	
 	
-	BYTE* newParams;
+	
+
+	BYTE *newParams, *oldParams;
 	if (!isVector) //Scalar type
 	{
 	    newParams=new BYTE[cmd->func_paramsLength+size];
@@ -166,27 +168,35 @@ errType rcsCmd::pushParam(OrtsType type, const void* param)
 	else { // Vector type
 	    newParams=new BYTE[cmd->func_paramsLength+size+sizeof(WORD)];
 	
-	    memcpy(newParams, cmd->func_params, cmd->func_paramsLength);
+	    memcpy(newParams, cmd->func_params, cmd->func_paramsLength); // Add old part of cmd
 	
-	    *(newParams+cmd->func_paramsLength)=size;
-	    memcpy(newParams+sizeof(WORD), param, size);
-	    cmd->func_paramsLength+=size+sizeof(WORD);
-	
+	    oldParams=newParams;
+	    newParams=newParams+cmd->func_paramsLength;
+	     // Create vector
+	    *(WORD*)(newParams)=(WORD)size;
+	    memcpy(newParams+sizeof(WORD), param, size); // Copy entity of vector
+	    cmd->func_paramsLength+=size+sizeof(WORD); // Update common paramsLength
+
+	    newParams=oldParams;
+	  /*  printf("param=[");
+	   	for (int i=0; i< cmd->func_paramsLength; i++) printf(" %.2X", ((BYTE*)newParams)[i]);
+	   	printf("], size=%d\n", size);
+	*/
+
 	}
 	
 	delete (BYTE*)cmd->func_params;
 	cmd->func_params=newParams;
 	
 	/*printf("new param length=%d\n",cmd->func_paramsLength);
-
 	printf("all params=[");
 	for (int i=0; i< cmd->func_paramsLength; i++) printf(" %.2X", ((BYTE*)cmd->func_params)[i]);
-	printf("]\n");
-	*/
+	printf("]\n");*/
+
 	return result;
 }
 
-errType rcsCmd::encode(BYTE func_num, DWORD par_length, const BYTE* data)
+errType rcsCmd::encode(BYTE func_num, WORD par_length, const void* data)
 {
 	errType result=err_not_init;
 	
@@ -204,28 +214,28 @@ errType rcsCmd::encode(BYTE func_num, DWORD par_length, const BYTE* data)
 }
 
 
-DWORD rcsCmd::get_func_paramsLength()
+WORD rcsCmd::get_func_paramsLength()
 {
      return cmd->func_paramsLength;
 }
 
 
-DWORD rcsCmd::getDataPos()
+WORD rcsCmd::getDataPos()
 {
      return sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength);
 }
   
-DWORD rcsCmd::getSignPos()
+WORD rcsCmd::getSignPos()
 {
      return cmd->func_paramsLength+sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength);
 }
 
-DWORD rcsCmd::getCmdLength()
+WORD rcsCmd::getCmdLength()
 {
      return cmd->func_paramsLength+sizeof(cmd->func_id)+sizeof(cmd->crc16_signature)+sizeof(cmd->func_paramsLength);
 }
   
-const void* rcsCmd::get_func_paramsPtr(DWORD offset)
+const void* rcsCmd::get_func_paramsPtr(WORD offset)
 {
     return ((BYTE*)cmd->func_params+offset);
 }
@@ -255,8 +265,8 @@ bool rcsCmd::checkSign()
     test_sign=test_cmd.get_crc_sign();
     
 ///*    if (verbose_level) {
-	printf("Расчётная подпись: %.4X\n",test_sign);
-	printf("Принятая подпись: %.4X\n",this->get_crc_sign());
+//	printf("Расчётная подпись: %.4X\n",test_sign);
+//	printf("Принятая подпись: %.4X\n",this->get_crc_sign());
 //    }
 //  */  
     if (test_sign==get_crc_sign()) result=true;

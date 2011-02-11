@@ -33,25 +33,13 @@ typedef enum {err_result_ok=0,
               err_abort=8,
               err_mem_alloc=9,
               err_sock_error=10,
-              err_not_found=11} errType;
+              err_not_found=11,
+              err_not_allowed=12} errType;
               
 extern char strErrTypes[][255];
 extern BYTE lenOrtsTypes[];
 
 typedef errType (*funcPtr)(void*);
 typedef errType (*funcVoid)(void);
-
-typedef struct {
-    BYTE value: 1;
-} __attribute__ ((packed)) booleanBit;
-
-typedef union {
-    struct {
-	BYTE value_0:1;
-	BYTE value_1:1;
-    } fields;
-    
-    BYTE value: 2;
-} __attribute__ ((packed)) boolean2Bits;
 
 #endif // ORTS_TYPES_H

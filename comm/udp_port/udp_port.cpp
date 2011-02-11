@@ -12,7 +12,7 @@
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #include <queue>
-#include "extra/ortsTypes/ortsTypes.h"
+#include <extra/ortsTypes/ortsTypes.h>
 #include "udp_port.h"
 
 BYTE udp_port::scanIfaces() {
@@ -220,6 +220,7 @@ errType udp_port::udp_async_process(BYTE *event_type, DWORD timeout_sec, DWORD t
 	
 	if ((timeout_sec==0) && (timeout_usec==0)) retval=select(sock+1, &rdset, &wrset, NULL, NULL);
 	else retval=select(sock+1, &rdset, &wrset, NULL, &timeout_value);
+
 	if (retval==-1) printf("select()\n");
 	else if (retval) {
 	    if (FD_ISSET(sock, &rdset)) {  // 0000 0001 - read state
