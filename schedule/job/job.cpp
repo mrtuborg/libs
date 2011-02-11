@@ -108,5 +108,5 @@ const void* job::get_paramsPtr(DWORD offset) { return jobEntity->get_func_params
 WORD job::get_paramsLength(){return jobEntity->get_func_paramsLength();}
 rcsCmd *job::cmd()    { return jobEntity;       }
 
-DWORD job::get_serviceIPaddr(){ return jobReference->serviceIPaddr; }
-WORD job::get_serviceUdpPort(){ return jobReference->serviceUdpPort; }
+DWORD job::get_dwServiceIPaddr(){ return jobReference->serviceIPaddr; }
+WORD job::get_wServiceUdpPort(){ return jobReference->serviceUdpPort; }

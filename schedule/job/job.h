@@ -36,8 +36,8 @@ class job{
 	BYTE get_btServId();
 	BYTE get_btFuncId();
 
-	DWORD get_serviceIPaddr();
-	WORD get_serviceUdpPort();
+	DWORD get_dwServiceIPaddr();
+	WORD get_wServiceUdpPort();
 
 	const void* get_paramsPtr(DWORD offset=0);
 	WORD get_paramsLength();
