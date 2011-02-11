@@ -4,9 +4,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <deque>
-#include "extra/ortsTypes/ortsTypes.h"
-#include "comm/udp_port/udp_port.h"
-#include "rcsLib/rcsCmd/rcsCmd.h"
+#include <extra/ortsTypes/ortsTypes.h>
+#include <comm/udp_port/udp_port.h>
+#include <rcsLib/rcsCmd/rcsCmd.h>
 #include "udpAction.h"
 
 void* udpListenerThread (void* user)

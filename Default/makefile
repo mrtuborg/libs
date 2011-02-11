@@ -9,11 +9,11 @@ RM := rm
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir.mk
--include rcsLib/udp_port/subdir.mk
 -include rcsLib/udpAction/subdir.mk
 -include rcsLib/rcsCmd/subdir.mk
--include rcsLib/ortsTypes/subdir.mk
--include rcsLib/crc/subdir.mk
+-include math/crc/subdir.mk
+-include extra/ortsTypes/subdir.mk
+-include comm/udp_port/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -42,19 +42,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: 
+all: libs
 
 # Tool invocations
-: $(OBJS) $(USER_OBJS)
+libs: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MacOS X C++ Linker'
-	g++  -o  $(OBJS) $(USER_OBJS) $(LIBS)
+	g++  -o "libs" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(C++_DEPS)$(OBJS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) 
+	-$(RM) $(C++_DEPS)$(OBJS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) libs
 	-@echo ' '
 
 .PHONY: all clean dependents

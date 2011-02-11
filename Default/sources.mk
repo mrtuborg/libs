@@ -23,9 +23,9 @@ C_UPPER_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-rcsLib/udp_port \
 rcsLib/udpAction \
 rcsLib/rcsCmd \
-rcsLib/ortsTypes \
-rcsLib/crc \
+math/crc \
+extra/ortsTypes \
+comm/udp_port \
 
