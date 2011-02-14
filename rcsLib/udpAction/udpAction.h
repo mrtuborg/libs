@@ -21,7 +21,7 @@ class udpAction
 	errType  readData(BYTE **data_out, DWORD *length);
 	errType  readDataAsCmd(rcsCmd **data_out);
 	
-	errType receiveEvent();
+	errType receiveEvent(DWORD timeOut_sec=0, DWORD timeOut_ms=0);
 	errType waitRecvEvent();
 	errType sendAction();
 	

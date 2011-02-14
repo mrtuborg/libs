@@ -133,7 +133,7 @@ errType udpAction::sendAction()
     return result;
 }
 
-errType udpAction::receiveEvent()
+errType udpAction::receiveEvent(DWORD timeOut_sec, DWORD timeOut_ms)
 {
     errType result=err_not_init;
     BYTE event=0;
@@ -143,7 +143,7 @@ errType udpAction::receiveEvent()
 
     BYTE* data;
     
-    result=udpPort->udp_async_process(&event,10,0);
+    result=udpPort->udp_async_process(&event,timeOut_sec,timeOut_ms);
     
     if ((result==err_result_ok) & ((event&0x01)==0x01)){
 	//printf("Have new data!\n");
