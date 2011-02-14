@@ -9,7 +9,7 @@
 #include <rcsLib/rcsCmd/rcsCmd.h>
 #include "udpAction.h"
 
-void* udpListenerThread (void* user)
+void * udpListenerThread(void* user)
 {
     errType result=err_not_init;
     bool terminate=false;
@@ -28,17 +28,20 @@ void* udpListenerThread (void* user)
 	if (result==err_timeout) printf("udpListenerThread exited by timeout\n");
 	else printf("udpListenerThread exited by received data event\n");
     }*/
+
     return user;
 }
 
 
-udpAction::udpAction(BYTE type, WORD port, char* ip)
+udpAction::udpAction(BYTE type, WORD port, char* ip, DWORD setTimeOut_sec, DWORD setTimeOut_ms)
 {
     actionType=type;
     udpPort=new udp_port(port);
     remote_ip.s_addr=inet_addr(ip);
     Command=new rcsCmd;
     //dataLen=0;
+    this->timeOut_ms=setTimeOut_ms;
+    this->timeOut_sec=setTimeOut_sec;
 }
 
 udpAction::~udpAction()
@@ -133,7 +136,7 @@ errType udpAction::sendAction()
     return result;
 }
 
-errType udpAction::receiveEvent(DWORD timeOut_sec, DWORD timeOut_ms)
+errType udpAction::receiveEvent()
 {
     errType result=err_not_init;
     BYTE event=0;
@@ -184,8 +187,7 @@ errType udpAction::processAction()
 	    Command=0;
 	    
 	    udpPort->open_port(true);
-	    //int ret=
-	    	pthread_create(&listenerThread, NULL, udpListenerThread, (void*) this);
+	    int ret=pthread_create(&listenerThread, NULL, udpListenerThread, (void*) this);
 	    waitRecvEvent();
 	    
 	    udpPort->close_port();
