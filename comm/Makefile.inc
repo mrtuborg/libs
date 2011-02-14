@@ -1,1 +1,1 @@
-lib_subdirs	:= udp_port
+lib_subdirs	:= udp_port deqUdp

@@ -179,10 +179,10 @@ errType udpAction::processAction()
     errType result=err_not_init;
     switch (actionType)
     {
-    case 0: 
+    case ACTION_SEND:
 	    result=sendAction();
 	    break;
-    case 1: 
+    case ACTION_RECEIVE:
 	    delete Command;
 	    Command=0;
 	    
