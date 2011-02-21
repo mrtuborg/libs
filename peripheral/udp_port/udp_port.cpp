@@ -202,18 +202,28 @@ errType udp_port::sendData(in_addr remote_ip, BYTE *buf, size_t len)
     return result;
 }
 
-
+//  Checks the state of udp_port - ready for read (has datagram) or ready for write
+//  The description of parameters:
+//    Value of timeout sets the time interval for awaiting event.
+//    If there are no events during that time - returns err_timeout. If it is - return err_ok.
+//    Variants of timeout values:
+//      0 - check current state of port. if no events - return err_timeout immediately
+//      > 0 - wait for event appearance during timeout interval. If no events - return err_timeout
+//      -1 - unlimited awaiting of event appearance.
+//    event_type - returns code of port's state if it has event:
+//      1 - port ready for read (has datagram for read)
+//      2 - port ready for write (ready for send datagram)
 errType udp_port::udp_async_process(BYTE *event_type, DWORD timeout_sec, DWORD timeout_usec)
 {
-	errType result=err_not_init;
+    errType result = err_not_init;
 	
-	*event_type=0;
-	int retval=0;
-	
-	rdset = static_rdset;
-	wrset = static_wrset;
-	
-	struct timeval timeout_value;
+    *event_type = 0;
+    int retval  = 0;
+
+    rdset = static_rdset;
+    wrset = static_wrset;
+
+    struct timeval timeout_value;
 	
 	timeout_value.tv_sec=timeout_sec;
 	timeout_value.tv_usec=timeout_usec;
@@ -221,23 +231,23 @@ errType udp_port::udp_async_process(BYTE *event_type, DWORD timeout_sec, DWORD t
 	if (timeout_sec==(DWORD)-1) retval=select(sock+1, &rdset, &wrset, NULL, NULL);
 	else retval=select(sock+1, &rdset, &wrset, NULL, &timeout_value);
 
-	if (retval==-1) printf("select()\n");
-	else if (retval) {
-	    if (FD_ISSET(sock, &rdset)) {  // 0000 0001 - read state
-	    /* do recvform and handle your NAK */
-	    *event_type|=0x01;
-	    result=err_result_ok;
-	    }
+    if (retval == -1) printf("select()\n");
+    else if (retval)  {
+        if (FD_ISSET(sock, &rdset))  {  // 0000 0001 - read state
+            /* do recvform and handle your NAK */
+            *event_type |= 0x01;
+            result = err_result_ok;
+        }
 
-	    if (FD_ISSET(sock, &wrset)) {  // 0000 0010 - write state
-	    /* do sendto */
-	    *event_type|=0x02;
-	    result=err_result_ok;
-	    }
-	} else {
-	    result=err_timeout;
-	}
-	return result;
+        if (FD_ISSET(sock, &wrset)) {  // 0000 0010 - write state
+            /* do sendto */
+            *event_type |= 0x02;
+            result = err_result_ok;
+        }
+    } else  {
+        result = err_timeout;
+    }
+    return result;
 }
 
 

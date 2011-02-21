@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include <deque>
 #include <extra/ortsTypes/ortsTypes.h>
-#include <comm/udp_port/udp_port.h>
+#include <peripheral/udp_port/udp_port.h>
 #include <rcsLib/rcsCmd/rcsCmd.h>
 #include "udpAction.h"
 
@@ -33,7 +33,7 @@ void * udpListenerThread(void* user)
 }
 
 
-udpAction::udpAction(BYTE type, WORD port, char* ip, DWORD setTimeOut_sec, DWORD setTimeOut_ms)
+udpAction::udpAction(BYTE type, WORD port, char* ip)
 {
     actionType=type;
     udpPort=new udp_port(port);
@@ -136,7 +136,7 @@ errType udpAction::sendAction()
     return result;
 }
 
-errType udpAction::receiveEvent()
+errType udpAction::receiveEvent(DWORD timeOut_sec, DWORD timeOut_ms)
 {
     errType result=err_not_init;
     BYTE event=0;
