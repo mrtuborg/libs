@@ -33,7 +33,7 @@ void * udpListenerThread(void* user)
 }
 
 
-udpAction::udpAction(BYTE type, WORD port, char* ip)
+udpAction::udpAction(BYTE type, WORD port, char* ip, DWORD setTimeOut_sec, DWORD setTimeOut_ms)
 {
     actionType=type;
     udpPort=new udp_port(port);
@@ -136,7 +136,7 @@ errType udpAction::sendAction()
     return result;
 }
 
-errType udpAction::receiveEvent(DWORD timeOut_sec, DWORD timeOut_ms)
+errType udpAction::receiveEvent()
 {
     errType result=err_not_init;
     BYTE event=0;
@@ -146,19 +146,20 @@ errType udpAction::receiveEvent(DWORD timeOut_sec, DWORD timeOut_ms)
 
     BYTE* data;
     
+
     result=udpPort->udp_async_process(&event,timeOut_sec,timeOut_ms);
     
     if ((result==err_result_ok) & ((event&0x01)==0x01)){
-	//printf("Have new data!\n");
-	data=new BYTE[*sz];
-	result=udpPort->readData(data, sz);
+    		//printf("Have new data!\n");
+    		data=new BYTE[*sz];
+    		result=udpPort->readData(data, sz);
 	
-	if (Command==0) Command=new rcsCmd;
-	Command->encode(data);
-	delete []data;
+    		if (Command==0) Command=new rcsCmd;
+    		Command->encode(data);
+    		delete []data;
     }
     
-    //if (result==err_timeout) printf("timeout\n");
+
     return result;
 }
       
