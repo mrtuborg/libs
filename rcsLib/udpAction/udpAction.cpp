@@ -4,12 +4,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <deque>
-#include "extra/ortsTypes/ortsTypes.h"
-#include "peripheral/udp_port/udp_port.h"
-#include "rcsLib/rcsCmd/rcsCmd.h"
+#include <extra/ortsTypes/ortsTypes.h>
+#include <peripheral/udp_port/udp_port.h>
+#include <rcsLib/rcsCmd/rcsCmd.h>
 #include "udpAction.h"
 
-void* udpListenerThread (void* user)
+void * udpListenerThread(void* user)
 {
     errType result=err_not_init;
     bool terminate=false;
@@ -28,6 +28,7 @@ void* udpListenerThread (void* user)
 	if (result==err_timeout) printf("udpListenerThread exited by timeout\n");
 	else printf("udpListenerThread exited by received data event\n");
     }*/
+
     return user;
 }
 
@@ -39,6 +40,8 @@ udpAction::udpAction(BYTE type, WORD port, char* ip)
     remote_ip.s_addr=inet_addr(ip);
     Command=new rcsCmd;
     //dataLen=0;
+    this->timeOut_ms=setTimeOut_ms;
+    this->timeOut_sec=setTimeOut_sec;
 }
 
 udpAction::~udpAction()
@@ -176,16 +179,15 @@ errType udpAction::processAction()
     errType result=err_not_init;
     switch (actionType)
     {
-    case 0: 
+    case ACTION_SEND:
 	    result=sendAction();
 	    break;
-    case 1: 
+    case ACTION_RECEIVE:
 	    delete Command;
 	    Command=0;
 	    
 	    udpPort->open_port(true);
-	    //int ret=
-	    	pthread_create(&listenerThread, NULL, udpListenerThread, (void*) this);
+	    int ret=pthread_create(&listenerThread, NULL, udpListenerThread, (void*) this);
 	    waitRecvEvent();
 	    
 	    udpPort->close_port();

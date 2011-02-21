@@ -216,7 +216,7 @@ errType udp_port::sendData(in_addr remote_ip, BYTE *buf, size_t len)
 errType udp_port::udp_async_process(BYTE *event_type, DWORD timeout_sec, DWORD timeout_usec)
 {
     errType result = err_not_init;
-
+	
     *event_type = 0;
     int retval  = 0;
 
@@ -224,13 +224,12 @@ errType udp_port::udp_async_process(BYTE *event_type, DWORD timeout_sec, DWORD t
     wrset = static_wrset;
 
     struct timeval timeout_value;
-    timeout_value.tv_sec  = timeout_sec;
-    timeout_value.tv_usec = timeout_usec;
-
-    if (timeout_sec == (DWORD)-1)
-        retval = select(sock+1, &rdset, &wrset, NULL, NULL);
-    else
-        retval = select(sock+1, &rdset, &wrset, NULL, &timeout_value);
+	
+	timeout_value.tv_sec=timeout_sec;
+	timeout_value.tv_usec=timeout_usec;
+	
+	if (timeout_sec==(DWORD)-1) retval=select(sock+1, &rdset, &wrset, NULL, NULL);
+	else retval=select(sock+1, &rdset, &wrset, NULL, &timeout_value);
 
     if (retval == -1) printf("select()\n");
     else if (retval)  {
