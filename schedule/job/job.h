@@ -2,7 +2,7 @@ typedef struct job_type{
         DWORD objId;
         DWORD nextObjId;
         DWORD timeStart;
-        DWORD timeEnd;
+        DWORD timeLong;
         DWORD serviceIPaddr;
         WORD serviceUdpPort;
         BYTE service_id;
@@ -12,6 +12,8 @@ class job{
       job_type* jobReference;
         rcsCmd* jobEntity;
 
+          BYTE* workResult;
+          BYTE  state; // 0 - initialized, 1 - running, 2 - completed
 
 	public:
 	 job(DWORD id, DWORD serviceAddr, WORD serviceUdpPort);
@@ -22,7 +24,7 @@ class job{
 
 	errType set_dwNextJobID(DWORD id);
 	errType set_dwStartTime(DWORD time);
-	errType set_dwFinishTime(DWORD time);
+	errType set_dwLongTime(DWORD time);
 	errType set_btServiceId(BYTE id);
 	errType	setJobCmd(BYTE func_id, WORD param_len, void* args);
 	errType	setJobCmd(BYTE* cmd);

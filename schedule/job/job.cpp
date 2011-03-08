@@ -49,7 +49,7 @@ void job::dbgPrint()
     printf("object Id = %d\n", jobReference->objId);
     printf("next object Id = %d\n", jobReference->nextObjId);
     printf("start time = %d\n", jobReference->timeStart);
-    printf("finish time = %d\n", jobReference->timeEnd);
+    printf("finish time = %d\n", jobReference->timeStart+jobReference->timeLong);
     printf("calling service = %d\n", jobReference->service_id);
     printf("command:\n");
     jobEntity->dbgPrint();
@@ -67,9 +67,9 @@ errType job::set_dwStartTime(DWORD time)
 		return err_result_ok;
 }
 
-errType job::set_dwFinishTime(DWORD time)
+errType job::set_dwLongTime(DWORD time)
 {
-		jobReference->timeEnd=time;
+		jobReference->timeLong=time;
 		return err_result_ok;
 }
 
@@ -101,7 +101,7 @@ errType	job::setJobCmd(BYTE* cmd)
 DWORD job::get_dwObjId()   { return jobReference->objId;    }
 DWORD job::get_dwNextObjId()   { return jobReference->nextObjId;}
 WORD job::get_dwTimeStart() { return jobReference->timeStart; }
-WORD job::get_dwTimeEnd()   { return jobReference->timeEnd;   }
+WORD job::get_dwTimeEnd()   { return jobReference->timeLong;   }
 BYTE job::get_btServId()   { return jobReference->service_id;}
 BYTE job::get_btFuncId()   { return jobEntity->get_func_id();}
 const void* job::get_paramsPtr(DWORD offset) { return jobEntity->get_func_paramsPtr(offset);}
