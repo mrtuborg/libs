@@ -13,7 +13,7 @@ char strErrTypes[13][255]=
        {"Не найден"},
        {"Операция не разрешена"}};
 
-char lenOrtsTypes[20]={
+char lenOrtsTypes[21]={
 		1,//size of element of type_ERRTYPE
 		1,//size of element of type_BYTE
 		2,//size of element of type_WORD
@@ -27,4 +27,5 @@ char lenOrtsTypes[20]={
 		0,0,0,0,0,0,0, //10-16:
 		1, //17: size of element of type_BYTEVECTOR
 		2, //18: size of element of type_WORDVECTOR
-		1};//19: size of element of type_CHARVECTOR;
+		1, //19: size of element of type_CHARVECTOR;
+		4};//20: size of element of type_DWORDVECTOR;
