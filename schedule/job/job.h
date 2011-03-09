@@ -44,6 +44,8 @@ class job{
 	const void* get_paramsPtr(DWORD offset=0);
 	WORD get_paramsLength();
 
+	BYTE* getState();
+	BYTE* lastAnswer();
 
 	rcsCmd* cmd();
 	

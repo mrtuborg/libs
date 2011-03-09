@@ -14,11 +14,16 @@ job::job(DWORD id, DWORD IPAddr, WORD UdpPort)
 	jobReference->serviceIPaddr=IPAddr;
 	jobReference->serviceUdpPort=UdpPort;
 	jobEntity=new rcsCmd();
+
+	state=0;
+	workResult = new BYTE[2];
+	workResult[0] = 0;
+	workResult[1] = 0;
 }
 
 job::~job()
 {
-
+	delete []workResult;
 
 }
 
@@ -110,3 +115,6 @@ rcsCmd *job::cmd()    { return jobEntity;       }
 
 DWORD job::get_dwServiceIPaddr(){ return jobReference->serviceIPaddr; }
 WORD job::get_wServiceUdpPort(){ return jobReference->serviceUdpPort; }
+
+BYTE*	job::getState() { return &state; };
+BYTE* job::lastAnswer() { return workResult; };
