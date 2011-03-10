@@ -13,10 +13,10 @@ WORD CRC16_eval_step (WORD crc, BYTE data)
 }
 
 
-WORD CRC16_eval(const void *addr, int len, WORD def_crc=0)
+WORD CRC16_eval(const void *addr, int len, WORD def_crc=0xFFFF)
 {
     WORD crc = def_crc;
     for(int i=0; i<len; i++) crc = CRC16_eval_step(crc, ((BYTE*)addr)[i]);
-    
+
     return crc;
 }
