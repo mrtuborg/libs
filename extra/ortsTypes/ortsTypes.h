@@ -19,7 +19,8 @@ typedef enum {
 		type_QWORD=0x08,
 		type_BYTEVECTOR=0x11,
 		type_WORDVECTOR=0x12,
-		type_CHARVECTOR=0x13
+		type_CHARVECTOR=0x13,
+		type_DWORDVECTOR=0x14,
 	     } OrtsType;
 
 typedef enum {err_result_ok=0,
