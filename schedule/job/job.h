@@ -1,3 +1,5 @@
+typedef struct in_addr in_addr_struct;
+
 typedef struct job_type{
         DWORD objId;
         DWORD nextObjId;
@@ -13,6 +15,7 @@ class job{
         rcsCmd* jobEntity;
 
           BYTE* workResult;
+          WORD workResultLength;
           BYTE  state; // 0 - initialized, 1 - running, 2 - completed
 
 	public:
@@ -34,18 +37,18 @@ class job{
 	DWORD get_dwObjId();
 	DWORD get_dwNextObjId();
 	WORD get_dwTimeStart();
-	WORD get_dwTimeEnd();
+	WORD get_dwTimeLong();
 	BYTE get_btServId();
 	BYTE get_btFuncId();
 
-	DWORD get_dwServiceIPaddr();
+	void get_dwServiceIPaddr(struct in_addr *ip);
 	WORD get_wServiceUdpPort();
 
 	const void* get_paramsPtr(DWORD offset=0);
 	WORD get_paramsLength();
 
-	BYTE* getState();
-	BYTE* lastAnswer();
+	BYTE getState();
+	void lastAnswer(BYTE**, WORD*);
 
 	rcsCmd* cmd();
 	
