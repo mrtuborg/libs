@@ -1,8 +1,11 @@
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <extra/ortsTypes/ortsTypes.h>
 #include <rcsLib/rcsCmd/rcsCmd.h>
+
+
 
 #include "job.h"
 
@@ -14,11 +17,16 @@ job::job(DWORD id, DWORD IPAddr, WORD UdpPort)
 	jobReference->serviceIPaddr=IPAddr;
 	jobReference->serviceUdpPort=UdpPort;
 	jobEntity=new rcsCmd();
+
+	state=0;
+	workResult = new BYTE[2];
+	workResult[0] = 0;
+	workResult[1] = 0;
 }
 
 job::~job()
 {
-
+	delete []workResult;
 
 }
 
@@ -101,12 +109,20 @@ errType	job::setJobCmd(BYTE* cmd)
 DWORD job::get_dwObjId()   { return jobReference->objId;    }
 DWORD job::get_dwNextObjId()   { return jobReference->nextObjId;}
 WORD job::get_dwTimeStart() { return jobReference->timeStart; }
-WORD job::get_dwTimeEnd()   { return jobReference->timeLong;   }
+WORD job::get_dwTimeLong()   { return jobReference->timeLong;   }
 BYTE job::get_btServId()   { return jobReference->service_id;}
 BYTE job::get_btFuncId()   { return jobEntity->get_func_id();}
 const void* job::get_paramsPtr(DWORD offset) { return jobEntity->get_func_paramsPtr(offset);}
 WORD job::get_paramsLength(){return jobEntity->get_func_paramsLength();}
 rcsCmd *job::cmd()    { return jobEntity;       }
 
-DWORD job::get_dwServiceIPaddr(){ return jobReference->serviceIPaddr; }
-WORD job::get_wServiceUdpPort(){ return jobReference->serviceUdpPort; }
+
+void job::get_dwServiceIPaddr(struct in_addr *outIP)
+{
+	outIP->s_addr = (in_addr_t) jobReference->serviceIPaddr;
+
+}
+WORD  job::get_wServiceUdpPort(){ return jobReference->serviceUdpPort; }
+
+BYTE job::getState() { return state; };
+void job::lastAnswer(BYTE** answer, WORD *length) { *answer = workResult; *length = workResultLength; }
