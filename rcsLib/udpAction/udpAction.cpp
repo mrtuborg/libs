@@ -188,7 +188,8 @@ errType udpAction::processAction()
 	    Command=0;
 	    
 	    udpPort->open_port(true);
-	    int ret=pthread_create(&listenerThread, NULL, udpListenerThread, (void*) this);
+	    //int ret=
+	    		pthread_create(&listenerThread, NULL, udpListenerThread, (void*) this);
 	    waitRecvEvent();
 	    
 	    udpPort->close_port();

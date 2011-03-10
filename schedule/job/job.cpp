@@ -126,3 +126,12 @@ WORD  job::get_wServiceUdpPort(){ return jobReference->serviceUdpPort; }
 
 BYTE job::getState() { return state; };
 void job::lastAnswer(BYTE** answer, WORD *length) { *answer = workResult; *length = workResultLength; }
+
+void job::setState(BYTE newState) { state = newState; }
+void job::setAnswer(BYTE* setAnswer, WORD length)
+{
+	delete []workResult;
+	workResult = new BYTE [length];
+	memcpy (workResult, setAnswer, length);
+	workResultLength = length;
+}

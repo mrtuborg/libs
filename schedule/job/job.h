@@ -50,6 +50,9 @@ class job{
 	BYTE getState();
 	void lastAnswer(BYTE**, WORD*);
 
+	void setState(BYTE newState);
+	void setAnswer(BYTE* setAnswer, WORD length);
+
 	rcsCmd* cmd();
 	
 	void dbgPrint();
