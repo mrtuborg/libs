@@ -11,17 +11,24 @@ class udpAction
     udp_port *udpPort;
     rcsCmd *Command;
     
+    DWORD timeOut_sec;
+    DWORD timeOut_ms;
+
+
     
     public:
-	udpAction(BYTE type, WORD port, char* ip="127.0.0.1");
+	udpAction(BYTE type, WORD port, char* ip="127.0.0.1", DWORD setTimeOut_sec=0, DWORD setTimeOut_ms=0);
 	~udpAction();
 	
+	errType receiveEvent();
+
 	errType writeData(BYTE *data_in, DWORD length);
 	errType writeDataAsCmd (rcsCmd *data);
 	errType  readData(BYTE **data_out, DWORD *length);
 	errType  readDataAsCmd(rcsCmd **data_out);
 	
-	errType receiveEvent();
+	//errType receiveEvent(DWORD timeOut_sec=0, DWORD timeOut_ms=0);
+
 	errType waitRecvEvent();
 	errType sendAction();
 	
@@ -29,6 +36,8 @@ class udpAction
 	bool isCmdExists();
 	const void* getParamPtr(WORD offset=0);
 	DWORD getParamLength();
+
+
 };
 
-extern void* udpListenerThread (void* user);
+extern void * udpListenerThread (void* user);

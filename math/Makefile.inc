@@ -1,1 +1,1 @@
-lib_subdirs	:= crc
+lib_subdirs	:= crc latlong

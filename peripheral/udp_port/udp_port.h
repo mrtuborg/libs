@@ -27,7 +27,7 @@ public:
     errType close_port();
     errType sendData(in_addr remote_ip, BYTE *buf, size_t len);
     errType readData(BYTE* addr, size_t* len, in_addr *ip_from=0, bool peek=false);
-    errType udp_async_process(BYTE *event_type, DWORD time_sec=0, DWORD time_usec=0);
+    errType udp_async_process(BYTE *event_type, DWORD time_sec, DWORD time_usec);
 };
 
 #endif // UDP_PORT_H

@@ -67,7 +67,7 @@ errType rcsCmd::encode(const BYTE* data)
 	
 	cmd->func_id=data[0];
 	cmd->func_paramsLength=*(WORD*)(data+sizeof(cmd->func_id));
-	
+
 	if (cmd->func_paramsLength>0) {
 	    cmd->func_params=new BYTE[cmd->func_paramsLength];                                                            
 	    memcpy(cmd->func_params, data+getDataPos(), cmd->func_paramsLength);                                              
@@ -150,17 +150,14 @@ errType rcsCmd::pushParam(OrtsType type, const void* param)
 	} else {
 	    size=lenOrtsTypes[type];
 	}
-/*	
+/*
 	printf("size=%d\n",size);
-	printf("param=[");
-	for (int i=0; i< size; i++) printf(" %.2X", ((BYTE*)param)[i]);
-	printf("]\n");
-	
-	printf("old param length=%d\n",cmd->func_paramsLength);
-*/	
+*/
 	
 	
-	BYTE* newParams;
+	
+
+	BYTE *newParams, *oldParams;
 	if (!isVector) //Scalar type
 	{
 	    newParams=new BYTE[cmd->func_paramsLength+size];
@@ -171,23 +168,31 @@ errType rcsCmd::pushParam(OrtsType type, const void* param)
 	else { // Vector type
 	    newParams=new BYTE[cmd->func_paramsLength+size+sizeof(WORD)];
 	
-	    memcpy(newParams, cmd->func_params, cmd->func_paramsLength);
+	    memcpy(newParams, cmd->func_params, cmd->func_paramsLength); // Add old part of cmd
 	
-	    *(newParams+cmd->func_paramsLength)=size;
-	    memcpy(newParams+sizeof(WORD), param, size);
-	    cmd->func_paramsLength+=size+sizeof(WORD);
-	
+	    oldParams=newParams;
+	    newParams=newParams+cmd->func_paramsLength;
+	     // Create vector
+	    *(WORD*)(newParams)=(WORD)size;
+	    memcpy(newParams+sizeof(WORD), param, size); // Copy entity of vector
+	    cmd->func_paramsLength+=size+sizeof(WORD); // Update common paramsLength
+
+	    newParams=oldParams;
+	  /*  printf("param=[");
+	   	for (int i=0; i< cmd->func_paramsLength; i++) printf(" %.2X", ((BYTE*)newParams)[i]);
+	   	printf("], size=%d\n", size);
+	*/
+
 	}
 	
 	delete (BYTE*)cmd->func_params;
 	cmd->func_params=newParams;
 	
 	/*printf("new param length=%d\n",cmd->func_paramsLength);
-
 	printf("all params=[");
 	for (int i=0; i< cmd->func_paramsLength; i++) printf(" %.2X", ((BYTE*)cmd->func_params)[i]);
-	printf("]\n");
-	*/
+	printf("]\n");*/
+
 	return result;
 }
 
