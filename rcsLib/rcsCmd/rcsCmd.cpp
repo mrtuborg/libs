@@ -47,17 +47,25 @@ void rcsCmd::dbgPrint()
 errType rcsCmd::decode(BYTE* data)
 {
 	errType result=err_not_init;
-        //1. Copyng static part of cmd type:
+
+	if (cmd->func_paramsLength > MAX_RCS_PARAMS_LENGTH) result = err_params_decode;
+	else {
+		//1. Copyng static part of cmd type:
 	    /*printf("size=%d\n",getCmdLength());
 	    printf("param=[");
 	    for (int i=0; i< getCmdLength(); i++) printf(" %.2X", ((BYTE*)cmd)[i]);
 	    printf("]\n");
-	      */
+	   */
 	    memcpy(data, cmd, sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength));
 	    
  	//2. Decoding dynamic part from dataBlock:
 	    memcpy(data+sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength), cmd->func_params, cmd->func_paramsLength);
 	    memcpy(data+sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength)+cmd->func_paramsLength, &cmd->crc16_signature, sizeof(cmd->crc16_signature));
+
+	    result = err_result_ok;
+	}
+
+
 	return result;
 }
 
@@ -68,7 +76,7 @@ errType rcsCmd::encode(const BYTE* data)
 	cmd->func_id=data[0];
 	cmd->func_paramsLength=*(WORD*)(data+sizeof(cmd->func_id));
 
-	if (cmd->func_paramsLength>0) {
+	if (cmd->func_paramsLength <= MAX_RCS_PARAMS_LENGTH) {
 	    cmd->func_params=new BYTE[cmd->func_paramsLength];                                                            
 	    memcpy(cmd->func_params, data+getDataPos(), cmd->func_paramsLength);                                              
 	 }
@@ -204,7 +212,7 @@ errType rcsCmd::encode(BYTE func_num, WORD par_length, const void* data)
 	     cmd->func_id=func_num;
 	     cmd->func_paramsLength=par_length;
 	     cmd->crc16_signature=0;
-	     if (par_length>0) {
+	     if (par_length <= MAX_RCS_PARAMS_LENGTH) {
 	//2. Creating dynamic part of cmd type:
 	        cmd->func_params=new BYTE[par_length];
 	//3. Decoding dynamic part from dataBlock:

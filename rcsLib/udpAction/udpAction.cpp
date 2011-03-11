@@ -73,28 +73,30 @@ errType udpAction::writeDataAsCmd(rcsCmd *data)
 }
 
 
-errType udpAction::writeData(BYTE *data_in, DWORD length)
+errType udpAction::writeData(BYTE *data_in, WORD length)
 {
     errType result=err_not_init;
-    if (Command==0) Command = new rcsCmd;
-    
-    Command->encode(data_in[0],length,data_in+1);
-
+    if (length >= MAX_RCS_PARAMS_LENGTH) return err_params_value;
+    else {
+    		if (Command==0) Command = new rcsCmd;
+    		Command->encode(data_in[0],length,data_in+1);
+    		result = err_result_ok;
 /*    printf("Action: ");
     for (int i=0; i<Command->getCmdLength(); i++) printf("%.2X ",Command->get_func_paramsPtr()[i]);
     printf(", Length=%d\n",Command->getCmdLength());
 */
+    }
     return result;
 }
 
-errType udpAction::readData(BYTE **data_out, DWORD *length)
+errType udpAction::readData(BYTE **data_out, WORD *length)
 {
     errType result=err_not_init;
     if (Command == 0 ) result=err_result_error;
     else {
-	Command->decode(*data_out);
-	*length=Command->getCmdLength();
-	result=err_result_ok;
+    		Command->decode(*data_out);
+    		*length=Command->getCmdLength();
+    		result=err_result_ok;
     }
     
     return result;

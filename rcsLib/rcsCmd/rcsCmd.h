@@ -1,3 +1,4 @@
+#define MAX_RCS_PARAMS_LENGTH 1024
 
 typedef struct rcsCmd_type {
     BYTE func_id;

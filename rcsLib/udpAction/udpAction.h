@@ -22,9 +22,9 @@ class udpAction
 	
 	errType receiveEvent();
 
-	errType writeData(BYTE *data_in, DWORD length);
+	errType writeData(BYTE *data_in, WORD length);
 	errType writeDataAsCmd (rcsCmd *data);
-	errType  readData(BYTE **data_out, DWORD *length);
+	errType  readData(BYTE **data_out, WORD *length);
 	errType  readDataAsCmd(rcsCmd **data_out);
 	
 	//errType receiveEvent(DWORD timeOut_sec=0, DWORD timeOut_ms=0);
