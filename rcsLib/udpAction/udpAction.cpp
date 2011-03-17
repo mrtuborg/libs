@@ -64,17 +64,11 @@ errType udpAction::waitRecvEvent()
 errType udpAction::writeDataAsCmd(rcsCmd *data)
 {
     errType result=err_not_init;
-    BYTE tmp[255];
     delete Command;
 
-    Command = new rcsCmd;
-    memcpy(Command, data, sizeof(rcsCmd));
-    //Command=data;
-    Command->decode(tmp);
-/*    printf("Action: ");
-    for (int i=0; i<Command->getCmdLength(); i++) printf("%.2X ",tmp[i]);
-    printf(", Length=%d\n",Command->getCmdLength());
-*/    return result;
+    Command = new rcsCmd(data);
+
+    return result;
 }
 
 
