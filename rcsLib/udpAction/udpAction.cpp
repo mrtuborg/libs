@@ -48,6 +48,7 @@ udpAction::~udpAction()
 {
     delete udpPort;
     delete Command;
+
 }
 
 errType udpAction::waitRecvEvent()
@@ -64,7 +65,11 @@ errType udpAction::writeDataAsCmd(rcsCmd *data)
 {
     errType result=err_not_init;
     BYTE tmp[255];
-    Command=data;
+    delete Command;
+
+    Command = new rcsCmd;
+    memcpy(Command, data, sizeof(rcsCmd));
+    //Command=data;
     Command->decode(tmp);
 /*    printf("Action: ");
     for (int i=0; i<Command->getCmdLength(); i++) printf("%.2X ",tmp[i]);
@@ -148,8 +153,9 @@ errType udpAction::receiveEvent()
     
 
     result=udpPort->udp_async_process(&event,timeOut_sec,timeOut_ms);
-    
-    if ((result==err_result_ok) & ((event&0x01)==0x01)){
+
+    if ((result==err_result_ok) & ((event&0x01)==0x01))
+    {
     		//printf("Have new data!\n");
     		data=new BYTE[*sz];
     		result=udpPort->readData(data, sz);

@@ -55,5 +55,6 @@ class job{
 
 	rcsCmd* cmd();
 	
+
 	void dbgPrint();
 };

@@ -15,6 +15,7 @@ job::job(DWORD id, DWORD IPAddr, WORD UdpPort)
 	jobReference = new job_type();
 	jobReference->objId=id;
 	jobReference->serviceIPaddr=IPAddr;
+
 	jobReference->serviceUdpPort=UdpPort;
 	jobEntity=new rcsCmd();
 
@@ -106,7 +107,8 @@ errType	job::setJobCmd(BYTE* cmd)
 }
 
 
-DWORD job::get_dwObjId()   { return jobReference->objId;    }
+DWORD job::get_dwObjId()   {
+	return jobReference->objId;    }
 DWORD job::get_dwNextObjId()   { return jobReference->nextObjId;}
 WORD job::get_dwTimeStart() { return jobReference->timeStart; }
 WORD job::get_dwTimeLong()   { return jobReference->timeLong;   }
@@ -119,7 +121,10 @@ rcsCmd *job::cmd()    { return jobEntity;       }
 
 void job::get_dwServiceIPaddr(struct in_addr *outIP)
 {
-	outIP->s_addr = (in_addr_t) jobReference->serviceIPaddr;
+	DWORD hIPaddr = htonl(jobReference->serviceIPaddr);
+//	printf("%p\n",jobReference);
+//	printf("IP = %d",jobReference->serviceIPaddr);
+	memcpy(&(outIP->s_addr),&(hIPaddr), sizeof(jobReference->serviceIPaddr));
 
 }
 WORD  job::get_wServiceUdpPort(){ return jobReference->serviceUdpPort; }

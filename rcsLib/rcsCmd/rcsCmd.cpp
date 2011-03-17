@@ -18,6 +18,9 @@ rcsCmd::rcsCmd(BYTE serviceId, BYTE funcId)
 rcsCmd::rcsCmd()
 {
     cmd=new rcsCmd_type;
+    cmd->func_id=0;
+    cmd->func_params=0;
+    cmd->func_paramsLength=0;
 }
 
 
@@ -25,6 +28,18 @@ rcsCmd::~rcsCmd()
 {
     delete cmd;
 }
+
+void rcsCmd::init(BYTE serviceId, BYTE funcId) {
+   // cmd=new rcsCmd_type;
+    cmd->func_id=funcId;
+
+    cmd->func_params=0;
+    cmd->func_paramsLength=0;
+
+    // serviceId - for future purpose
+
+}
+
 
 BYTE rcsCmd::get_func_id()
 {
