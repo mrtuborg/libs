@@ -23,19 +23,21 @@ typedef enum {
 		type_DWORDVECTOR=0x14,
 	     } OrtsType;
 
-typedef enum {err_result_ok=0,
-              err_result_error=1,
-              err_crc_error=2,
-              err_not_init=3,
-              err_params_decode=4,
-              err_params_value=5,
-              err_extra=6,
-              err_timeout=7,
-              err_abort=8,
-              err_mem_alloc=9,
-              err_sock_error=10,
-              err_not_found=11,
-              err_not_allowed=12} errType;
+typedef enum {err_result_ok        = 0,
+              err_result_error     = 1,
+              err_crc_error        = 2,
+              err_not_init         = 3,
+              err_params_decode    = 4,
+              err_params_value     = 5,
+              err_extra            = 6,
+              err_timeout          = 7,
+              err_abort            = 8,
+              err_mem_alloc        = 9,
+              err_sock_error       = 10,
+              err_not_found        = 11,
+              err_not_allowed      = 12,
+              err_frame_incomplete = 13
+          } errType;
               
 extern char strErrTypes[][255];
 extern BYTE lenOrtsTypes[];

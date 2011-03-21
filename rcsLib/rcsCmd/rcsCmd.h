@@ -12,8 +12,10 @@ class rcsCmd {
     rcsCmd_type* cmd;
     
 public:
+ rcsCmd(rcsCmd* cmdSrc);
  rcsCmd(BYTE serviceId, BYTE funcId);
  rcsCmd();
+
  ~rcsCmd();
 
  BYTE get_func_id();
