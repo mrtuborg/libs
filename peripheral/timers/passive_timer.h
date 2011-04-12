@@ -12,6 +12,7 @@ public:
     PassiveTimer();
     void start();
     void stop()  {  started_ = false;  }
+    void restart();
 
     time_t getInterval()  {  return interval_;  }
     void   setInterval(const time_t sec);
