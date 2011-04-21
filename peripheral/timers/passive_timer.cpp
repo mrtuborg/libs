@@ -26,6 +26,13 @@ void PassiveTimer::start()
 }
 
 //---------------------------------------------------------------------------------------//
+void PassiveTimer::restart()
+{
+    started_ = true;
+    initial_time_ = time(0);
+}
+
+//---------------------------------------------------------------------------------------//
 bool PassiveTimer::isActive()
 {
     bool active = true;
