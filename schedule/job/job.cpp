@@ -110,7 +110,7 @@ errType	job::setJobCmd(BYTE* cmd)
 DWORD job::get_dwObjId()   {
 	return jobReference->objId;    }
 DWORD job::get_dwNextObjId()   { return jobReference->nextObjId;}
-WORD job::get_dwTimeStart() { return jobReference->timeStart; }
+DWORD job::get_dwTimeStart() { return jobReference->timeStart; }
 WORD job::get_dwTimeLong()   { return jobReference->timeLong;   }
 BYTE job::get_btServId()   { return jobReference->service_id;}
 BYTE job::get_btFuncId()   { return jobEntity->get_func_id();}
@@ -121,7 +121,8 @@ rcsCmd *job::cmd()    { return jobEntity;       }
 
 void job::get_dwServiceIPaddr(struct in_addr *outIP)
 {
-	DWORD hIPaddr = htonl(jobReference->serviceIPaddr);
+	//DWORD hIPaddr = htonl(
+			DWORD hIPaddr = jobReference->serviceIPaddr;
 //	printf("%p\n",jobReference);
 //	printf("IP = %d",jobReference->serviceIPaddr);
 	memcpy(&(outIP->s_addr),&(hIPaddr), sizeof(jobReference->serviceIPaddr));

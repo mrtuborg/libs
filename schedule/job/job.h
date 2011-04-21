@@ -36,7 +36,7 @@ class job{
 	
 	DWORD get_dwObjId();
 	DWORD get_dwNextObjId();
-	WORD get_dwTimeStart();
+	DWORD get_dwTimeStart();
 	WORD get_dwTimeLong();
 	BYTE get_btServId();
 	BYTE get_btFuncId();
