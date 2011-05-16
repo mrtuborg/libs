@@ -40,6 +40,7 @@ typedef enum {err_result_ok        = 0,
           } errType;
               
 extern char strErrTypes[][255];
+extern char strOrtsTypes[][255];
 extern BYTE lenOrtsTypes[];
 
 typedef errType (*funcPtr)(void*);
