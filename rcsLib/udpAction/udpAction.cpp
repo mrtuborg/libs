@@ -33,7 +33,7 @@ void * udpListenerThread(void* user)
 }
 
 
-udpAction::udpAction(BYTE type, WORD port, char* ip, DWORD setTimeOut_sec, DWORD setTimeOut_ms)
+udpAction::udpAction(BYTE type, WORD port, const char* ip, DWORD setTimeOut_sec, DWORD setTimeOut_ms)
 {
     actionType=type;
     udpPort=new udp_port(port);

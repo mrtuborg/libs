@@ -17,7 +17,7 @@ class udpAction
 
     
     public:
-	udpAction(BYTE type, WORD port, char* ip="127.0.0.1", DWORD setTimeOut_sec=0, DWORD setTimeOut_ms=0);
+	udpAction(BYTE type, WORD port, const char* ip="127.0.0.1", DWORD setTimeOut_sec=0, DWORD setTimeOut_ms=0);
 	~udpAction();
 	
 	errType receiveEvent();
