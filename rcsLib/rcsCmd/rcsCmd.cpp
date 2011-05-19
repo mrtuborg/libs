@@ -54,7 +54,7 @@ BYTE rcsCmd::get_func_id()
 
 void rcsCmd::dbgPrint()
 {
-  printf("Функция №%d", cmd->func_id);
+  printf("Функция #%d", cmd->func_id);
   printf(", Параметры [");
   if (cmd->func_paramsLength==0) printf (" ОТСУТСТВУЮТ ");
   else {
