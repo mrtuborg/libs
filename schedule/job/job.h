@@ -18,6 +18,7 @@ class job{
       job_type* jobReference;
         rcsCmd* jobEntity;
         rcsCmd* ansEntity;
+	//----
           BYTE* workResult;
           WORD  workResultLength;
           BYTE  state; // 0 - initialized, 1 - running, 2 - completed
