@@ -1,16 +1,24 @@
+#ifndef RCSCMD_H
+#define RCSCMD_H
+
 #define MAX_RCS_PARAMS_LENGTH 1024
+#include <iostream>
+#include <extra/ortsTypes/ortsTypes.h>
 
-typedef struct rcsCmd_type {
-    BYTE func_id;
-    WORD func_paramsLength;
-    void *func_params;
-    WORD crc16_signature;
-
-} __attribute__ ((packed)) rcsCmd_type;
+//typedef struct rcsCmd_type {
+//    BYTE func_id;
+//    WORD func_paramsLength;
+//    void *func_params;
+//    WORD crc16_signature;
+//
+//} __attribute__ ((packed)) rcsCmd_type;
 
 class rcsCmd {
-    rcsCmd_type* cmd;
-    
+	BYTE func_id;
+	WORD func_paramsLength;
+	void *func_params;
+	WORD crc16_signature;
+
 public:
  rcsCmd(rcsCmd* cmdSrc);
  rcsCmd(BYTE serviceId, BYTE funcId);
@@ -30,6 +38,8 @@ public:
 
 
  void dbgPrint();
+ friend std::ostream& operator<< (std::ostream& stream, rcsCmd &cmdRef);
+
  errType decode(BYTE* dataBlock);
  errType eraseParams();
  errType pushParam(OrtsType, const void*);
@@ -43,3 +53,5 @@ public:
 
  bool checkSign();
 } __attribute__ ((packed));
+
+#endif

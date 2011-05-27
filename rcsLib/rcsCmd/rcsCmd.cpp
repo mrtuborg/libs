@@ -4,72 +4,52 @@
 #include "rcsCmd.h"
 #include <math/crc/crc16.h>
 
-rcsCmd::rcsCmd(BYTE serviceId, BYTE funcId)
+rcsCmd::rcsCmd(BYTE serviceId, BYTE _funcId): func_id(_funcId),  func_paramsLength(0), func_params(0)
 {
-    cmd=new rcsCmd_type;
-    cmd->func_id=funcId;
-    
-    cmd->func_params=0;
-    cmd->func_paramsLength=0;
      
     // serviceId - for future purpose
 }
 
-rcsCmd::rcsCmd()
+rcsCmd::rcsCmd():func_id(0), func_paramsLength(0), func_params(0)
 {
-    cmd=new rcsCmd_type;
-    cmd->func_id=0;
-    cmd->func_params=0;
-    cmd->func_paramsLength=0;
+
 }
 
 rcsCmd::rcsCmd(rcsCmd* cmdSrc)
 {
-	cmd=new rcsCmd_type;
-	this->encode(cmdSrc->get_func_id(), cmdSrc->get_func_paramsLength(), cmdSrc->get_func_paramsPtr());
+	encode(cmdSrc->get_func_id(), cmdSrc->get_func_paramsLength(), cmdSrc->get_func_paramsPtr());
 	makeSign();
 }
 
 rcsCmd::~rcsCmd()
 {
-    delete cmd;
 }
 
-//void rcsCmd::init(BYTE serviceId, BYTE funcId) {
-//   // cmd=new rcsCmd_type;
-//    cmd->func_id=funcId;
-//
-//    cmd->func_params=0;
-//    cmd->func_paramsLength=0;
-//
-//    // serviceId - for future purpose
-//
-//}
 
 
 BYTE rcsCmd::get_func_id()
 {
-    return cmd->func_id;
+    return func_id;
 }
 
 void rcsCmd::dbgPrint()
 {
-  printf("Функция #%d", cmd->func_id);
+  printf("Функция #%d", func_id);
   printf(", Параметры [");
-  if (cmd->func_paramsLength==0) printf (" ОТСУТСТВУЮТ ");
+  if (func_paramsLength==0) printf (" ОТСУТСТВУЮТ ");
   else {
-	for (WORD i=0; i<cmd->func_paramsLength; i++){
-	    printf("%.2X ",*((BYTE*)cmd->func_params+i));
+	for (WORD i=0; i<func_paramsLength; i++){
+	    printf("%.2X ",*((BYTE*)func_params+i));
 	}
   }
-  printf("],  КС: %.4X\n", cmd->crc16_signature);
+  printf("],  КС: %.4X\n", crc16_signature);
 }
 
 errType rcsCmd::decode(BYTE* data)
 {
 	errType result=err_not_init;
 
-	if (cmd->func_paramsLength > MAX_RCS_PARAMS_LENGTH) result = err_params_decode;
+	if (func_paramsLength > MAX_RCS_PARAMS_LENGTH) result = err_params_decode;
 	else {
 		//1. Copyng static part of cmd type:
 	    /*printf("size=%d\n",getCmdLength());
@@ -77,11 +57,14 @@ errType rcsCmd::decode(BYTE* data)
 	    for (int i=0; i< getCmdLength(); i++) printf(" %.2X", ((BYTE*)cmd)[i]);
 	    printf("]\n");
 	   */
-	    memcpy(data, cmd, sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength));
+	    memcpy(data, &func_id, sizeof(BYTE));
+	    data += sizeof(BYTE);
+	    	memcpy(data, &func_paramsLength, sizeof(WORD));
+	    	data += sizeof(WORD);
 	    
  	//2. Decoding dynamic part from dataBlock:
-	    memcpy(data+sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength), cmd->func_params, cmd->func_paramsLength);
-	    memcpy(data+sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength)+cmd->func_paramsLength, &cmd->crc16_signature, sizeof(cmd->crc16_signature));
+	    memcpy(data, &func_params, func_paramsLength);
+	    memcpy(data, &crc16_signature, sizeof(WORD));
 
 	    result = err_result_ok;
 	}
@@ -94,26 +77,26 @@ errType rcsCmd::encode(const BYTE* data)
 {
 	errType result=err_not_init;
 	
-	cmd->func_id=data[0];
-	cmd->func_paramsLength=*(WORD*)(data+sizeof(cmd->func_id));
+	func_id=data[0];
+	func_paramsLength=*(WORD*)(data+sizeof(BYTE));
 
-	if (cmd->func_paramsLength <= MAX_RCS_PARAMS_LENGTH) {
-	    cmd->func_params=new BYTE[cmd->func_paramsLength];                                                            
-	    memcpy(cmd->func_params, data+getDataPos(), cmd->func_paramsLength);                                              
+	if (func_paramsLength <= MAX_RCS_PARAMS_LENGTH) {
+	    func_params=new BYTE[func_paramsLength];
+	    memcpy(func_params, data+getDataPos(), func_paramsLength);
 	 }
 	 
-	cmd->crc16_signature=*(WORD*)((BYTE*)data+getSignPos());
+	crc16_signature=*(WORD*)((BYTE*)data+getSignPos());
         
-        return result;
+    return result;
 }
 
 errType rcsCmd::eraseParams()
 {
 	errType result=err_not_init;
-	if (cmd->func_paramsLength!=0) 
+	if (func_paramsLength!=0)
 	{
-	    cmd->func_paramsLength=0;
-	    delete (BYTE*)cmd->func_params;
+	    func_paramsLength=0;
+	    delete (BYTE*)func_params;
 	    result=err_result_ok;
 	}
 	
@@ -125,7 +108,7 @@ const void* rcsCmd::popParam(OrtsType type)
 {
 	BYTE* result=0;
 	WORD size=0;
-	BYTE* dataPtr=(BYTE*)cmd->func_params;
+	BYTE* dataPtr=(BYTE*)func_params;
 	
 	bool isVector=((type & 0xf0)!=0);
 	
@@ -145,16 +128,16 @@ const void* rcsCmd::popParam(OrtsType type)
 	}
 	//printf("popParam: size=%d, func_paramsLength=%d\n",size , cmd->func_paramsLength);
 	//printf("pop size=%d\n",size);
-	if (size <= cmd->func_paramsLength) { // we reduces func_paramsLength in every pop
+	if (size <= func_paramsLength) { // we reduces func_paramsLength in every pop
 		result=new BYTE[size];
 		memcpy(result, dataPtr, size);
-		BYTE* offset=((BYTE*)cmd->func_params)+size;
+		BYTE* offset=((BYTE*)func_params)+size;
 		if (size>getCmdLength()) {
-			cmd->func_params=0;
-			cmd->func_paramsLength=0;
+			func_params=0;
+			func_paramsLength=0;
 		} else {
-			cmd->func_params=offset;
-			cmd->func_paramsLength-=size;// we reduces func_paramsLength in every pop
+			func_params=offset;
+			func_paramsLength-=size;// we reduces func_paramsLength in every pop
 		}
 	} else {
 
@@ -182,29 +165,26 @@ errType rcsCmd::pushParam(OrtsType type, const void* param)
 /*
 	printf("size=%d\n",size);
 */
-	
-	
-	
 
 	BYTE *newParams, *oldParams;
 	if (!isVector) //Scalar type
 	{
-	    newParams=new BYTE[cmd->func_paramsLength+size];
-	    memcpy(newParams, cmd->func_params, cmd->func_paramsLength);
-	    memcpy(newParams+cmd->func_paramsLength, param, size);
-	    cmd->func_paramsLength+=size;
+	    newParams=new BYTE[func_paramsLength+size];
+	    memcpy(newParams, func_params, func_paramsLength);
+	    memcpy(newParams + func_paramsLength, param, size);
+	    func_paramsLength += size;
 	}
 	else { // Vector type
-	    newParams=new BYTE[cmd->func_paramsLength+size+sizeof(WORD)];
+	    newParams=new BYTE[func_paramsLength+size+sizeof(WORD)];
 	
-	    memcpy(newParams, cmd->func_params, cmd->func_paramsLength); // Add old part of cmd
+	    memcpy(newParams, func_params, func_paramsLength); // Add old part of cmd
 	
 	    oldParams=newParams;
-	    newParams=newParams+cmd->func_paramsLength;
+	    newParams=newParams+func_paramsLength;
 	     // Create vector
 	    *(WORD*)(newParams)=(WORD)size;
 	    memcpy(newParams+sizeof(WORD), param, size); // Copy entity of vector
-	    cmd->func_paramsLength+=size+sizeof(WORD); // Update common paramsLength
+	    func_paramsLength+=size+sizeof(WORD); // Update common paramsLength
 
 	    newParams=oldParams;
 	  /*  printf("param=[");
@@ -214,8 +194,8 @@ errType rcsCmd::pushParam(OrtsType type, const void* param)
 
 	}
 	
-	delete (BYTE*)cmd->func_params;
-	cmd->func_params=newParams;
+	delete (BYTE*)func_params;
+	func_params=newParams;
 	
 	/*printf("new param length=%d\n",cmd->func_paramsLength);
 	printf("all params=[");
@@ -230,14 +210,14 @@ errType rcsCmd::encode(BYTE func_num, WORD par_length, const void* data)
 	errType result=err_not_init;
 	
         //1. Copyng static part of cmd type:
-	     cmd->func_id=func_num;
-	     cmd->func_paramsLength=par_length;
-	     cmd->crc16_signature=0;
+	     func_id=func_num;
+	     func_paramsLength=par_length;
+	     crc16_signature=0;
 	     if (par_length <= MAX_RCS_PARAMS_LENGTH) {
 	//2. Creating dynamic part of cmd type:
-	        cmd->func_params=new BYTE[par_length];
+	        func_params=new BYTE[par_length];
 	//3. Decoding dynamic part from dataBlock:
-	        memcpy(cmd->func_params, data, par_length);
+	        memcpy(func_params, data, par_length);
 	    }
 	return result;
 }
@@ -245,41 +225,41 @@ errType rcsCmd::encode(BYTE func_num, WORD par_length, const void* data)
 
 WORD rcsCmd::get_func_paramsLength()
 {
-     return cmd->func_paramsLength;
+     return func_paramsLength;
 }
 
 
 WORD rcsCmd::getDataPos()
 {
-     return sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength);
+     return sizeof(func_id)+sizeof(func_paramsLength);
 }
   
 WORD rcsCmd::getSignPos()
 {
-     return cmd->func_paramsLength+sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength);
+     return func_paramsLength+sizeof(func_id)+sizeof(func_paramsLength);
 }
 
 WORD rcsCmd::getCmdLength()
 {
-     return cmd->func_paramsLength+sizeof(cmd->func_id)+sizeof(cmd->crc16_signature)+sizeof(cmd->func_paramsLength);
+     return func_paramsLength+sizeof(func_id)+sizeof(crc16_signature)+sizeof(func_paramsLength);
 }
   
 const void* rcsCmd::get_func_paramsPtr(WORD offset)
 {
-    return ((BYTE*)cmd->func_params+offset);
+    return ((BYTE*)func_params+offset);
 }
 
 WORD rcsCmd::get_crc_sign()
 {
-    return cmd->crc16_signature;
+    return crc16_signature;
 }
 
 errType rcsCmd::makeSign()
 {
-    cmd->crc16_signature=0;
-    if (cmd->func_paramsLength>0) cmd->crc16_signature=CRC16_eval((BYTE*)cmd->func_params,cmd->func_paramsLength);
-    cmd->crc16_signature=CRC16_eval((BYTE*)&cmd->func_paramsLength,sizeof(cmd->func_paramsLength),cmd->crc16_signature);
-    cmd->crc16_signature=CRC16_eval((BYTE*)&cmd->func_id,sizeof(cmd->func_id),cmd->crc16_signature);
+    crc16_signature=0;
+    if (func_paramsLength>0) crc16_signature=CRC16_eval((BYTE*)func_params, func_paramsLength);
+    crc16_signature=CRC16_eval((BYTE*)&func_paramsLength,sizeof(func_paramsLength),crc16_signature);
+    crc16_signature=CRC16_eval((BYTE*)&func_id,sizeof(func_id),crc16_signature);
     	     
     return err_result_ok;
 }
@@ -289,7 +269,7 @@ bool rcsCmd::checkSign()
     bool result=false;
     rcsCmd test_cmd;
     WORD test_sign;
-    test_cmd.encode(cmd->func_id, cmd->func_paramsLength, (const BYTE*)cmd->func_params);
+    test_cmd.encode(func_id, func_paramsLength, (const BYTE*)func_params);
     test_cmd.makeSign();
     test_sign=test_cmd.get_crc_sign();
     
@@ -300,4 +280,21 @@ bool rcsCmd::checkSign()
 //  */  
     if (test_sign==get_crc_sign()) result=true;
     return result;
+}
+
+
+std::ostream& operator<< (std::ostream& stream, rcsCmd &cmd)
+{
+
+	 stream << "Функция #"     << (int) cmd.get_func_id();
+	 stream << ", Параметры [";
+	 if (cmd.get_func_paramsLength() == 0) stream << " ОТСУТСТВУЮТ ";
+	  else {
+		for (WORD i=0; i<cmd.get_func_paramsLength(); i++){
+		    stream << "%.2X " << *((BYTE*)cmd.get_func_paramsPtr(i));
+		}
+	  }
+	  stream << "],  КС: %.4X\n" << cmd.get_crc_sign() << std::endl;
+
+	  return stream;
 }
