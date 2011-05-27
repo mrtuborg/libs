@@ -1,4 +1,11 @@
+#ifndef JOB_H
+#define JOB_H
+
+#include <netinet/in.h>
+#include <rcsLib/rcsCmd/rcsCmd.h>
+
 typedef struct in_addr in_addr_struct;
+typedef struct sockaddr_in sock_addr_in_struct;
 
 typedef struct job_type{
         DWORD opId;
@@ -7,74 +14,46 @@ typedef struct job_type{
         DWORD timeLong;
         DWORD serviceIPaddr;
          WORD serviceUdpPort;
-        DWORD answerIPaddr;
-         WORD answerUdpPort;
-        DWORD mask_offset;
-        DWORD mask_len;
-        DWORD mask_def;
 } __attribute__((packed)) job_type;
 
 class job{
-      job_type* jobReference;
-        rcsCmd* jobEntity;
-        rcsCmd* ansEntity;
-          BYTE* workResult;
-          WORD  workResultLength;
-          BYTE  state; // 0 - initialized, 1 - running, 2 - completed
-
 	public:
-     job();
-	/* job(DWORD id, DWORD serviceAddr   ,  WORD serviceUdpPort,
-	 	           DWORD answerAddr = 0,  WORD answerUdpPort = 0 );*/
-	~job();
-    
-	void encode(BYTE*);
-	void decode(BYTE*);
+		job(const job_type &header, const rcsCmd& cmd);
+		job(DWORD id = 0);
+		virtual ~job();
 
-	errType set_dwNextJobID(DWORD id);
-	errType set_dwStartTime(DWORD time);
-	errType set_dwLongTime(DWORD time);
-	errType	setJobCmd(BYTE func_id, WORD param_len, void* args);
-	errType	setJobCmd(BYTE* cmd);
+		int define_init_service(const sock_addr_in_struct& service_addr);
 
-	errType	setAnsCmd(BYTE func_id, WORD param_len, void* args);
-	errType	setAnsCmd(BYTE* cmd);
+		BYTE  get_cmd_btFuncId(void);
+		const BYTE* get_cmd_paramsPtr(size_t offset = 0);
+		WORD  get_cmd_paramsLength(void);
 
-	WORD size();
-	
-	DWORD get_dwOpId();
-	DWORD get_dwNextOpId();
-	DWORD get_dwTimeStart();
-	WORD get_dwTimeLong();
+		DWORD get_dwTimeStart();
+		DWORD get_dwTimeLong();
+		DWORD get_dwOpId();
+		DWORD get_dwNextOpId();
+		DWORD get_dwIPaddr(struct in_addr *out);
+		 WORD get_wUdpPort();
 
-	BYTE get_btFuncId();
-	BYTE get_ans_btFuncId();
-
-	void get_dwServiceIPaddr(struct in_addr *ip);
-	WORD get_wServiceUdpPort();
-
-	void get_dwAnswerIPaddr(struct in_addr *ip);
-	WORD get_wAnswerUdpPort();
-
-	const void* get_paramsPtr(DWORD offset=0);
-	WORD get_paramsLength();
-
-	const void* get_ans_paramsPtr(DWORD offset=0);
-	WORD get_ans_paramsLength();
+		 rcsCmd& rcscmd();
 
 
-	BYTE getState();
-	void lastAnswer(BYTE**, WORD*);
+		virtual size_t size();
 
-	void setState(BYTE newState);
-	void setAnswer(BYTE* setAnswer, WORD length);
+		friend std::ostream& operator<< (std::ostream& stream, job &jobRef);
+		friend std::istream& operator>>(std::istream& stream,  job &jobRef);
 
-	BYTE checkAnswerByMask();
 
-	rcsCmd* cmd();
-	rcsCmd* ans_cmd();
+  protected:
+		virtual int encode(BYTE*);
+		virtual int decode(BYTE*);
 
-	void dbgPrint();
+	private:
+	      job_type jobReference;
+	        rcsCmd jobEntity;
 
-	void set_mask (DWORD offset, DWORD len, DWORD def);
+	        	  BYTE* work_result;
+
 };
+
+#endif

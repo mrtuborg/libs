@@ -10,13 +10,19 @@
 #include "job.h"
 job::job()
 {
-	jobEntity = new rcsCmd();
-	ansEntity = new rcsCmd();
+//	jobEntity = new rcsCmd();
+//	ansEntity = new rcsCmd();
 
 	state         = 0;
 	workResult    = new BYTE[2]; // BYTE_VECTOR = NULL
 	workResult[0] = 0;
 	workResult[1] = 0;
+}
+
+errType job::init(DWORD id)
+{
+	jobReference                 = new job_type();
+	jobReference->opId           = id;
 }
 
 /*job::job(DWORD id, DWORD IPAddr, WORD UdpPort)
@@ -119,25 +125,7 @@ errType	job::setJobCmd(BYTE* cmd)
 		return result;
 }
 
-errType	job::setAnsCmd(BYTE func_id, WORD param_len, void* args)
-{
-		errType result (err_result_ok);
 
-		ansEntity->encode(func_id, param_len, args);
-		ansEntity->makeSign();
-
-		return result;
-}
-
-errType	job::setAnsCmd(BYTE* cmd)
-{
-		errType result (err_result_ok);
-
-		ansEntity->encode(cmd);
-		ansEntity->makeSign();
-
-		return result;
-}
 
 DWORD job::get_dwOpId()   { return jobReference->opId;    }
 DWORD job::get_dwNextOpId()   { return jobReference->nextOpId;}
