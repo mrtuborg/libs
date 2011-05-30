@@ -44,3 +44,8 @@ int actionReq::decode(BYTE* array)
 {
 	return job::decode(array);
 }
+
+size_t actionReq::size()
+{
+	   return job::size()+sizeof(actionReq);
+}

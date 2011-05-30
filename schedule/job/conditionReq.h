@@ -15,8 +15,10 @@ enum mask_action_t { mask_NOP = 0, mask_AND = 1, mask_OR = 2 };
 
 typedef struct cond_job_t: job_type
 {
+	DWORD timeout_watchdog_sec;
 	DWORD next_test_success_id;
 	DWORD next_test_fail_id;
+	DWORD next_test_timeout;
 } cond_job_t;
 
 typedef struct cond_mask_t
@@ -29,7 +31,7 @@ typedef struct cond_mask_t
 
 class conditionReq: public job {
 public:
-	conditionReq(DWORD id, DWORD next_test_success_id, DWORD next_test_fail_id);
+	conditionReq(DWORD id, DWORD timeout_watchdog_sec, DWORD next_test_success_id, DWORD next_test_fail_id, DWORD next_test_timeout);
 	conditionReq(const job_type &header, const cond_job_t &cond_header, const rcsCmd& cmd, const cond_mask_t& condition);
 	conditionReq(const BYTE* encode_array);
 //  conditionReq(const conditionReq& src);
@@ -52,9 +54,11 @@ public:
 	int encode(BYTE*);
 	int decode(BYTE*);
 
+	size_t size();
+
 private:
 	DWORD action; 				//  transit to opID, if opId == curr_opId state++;
-	 bool transmit_masked_value; // transmit to the next operation result value
+	// bool transmit_masked_value; // transmit to the next operation result value
 	 cond_job_t  cond_labels;
 	 cond_mask_t mask;
 

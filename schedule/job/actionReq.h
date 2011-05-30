@@ -16,6 +16,7 @@ public:
 	actionReq(const job_type &header, const rcsCmd& cmd);
 	actionReq(const BYTE* encode_array);
 	actionReq();
+	size_t size();
 	virtual ~actionReq();
 
 

@@ -132,3 +132,8 @@ int conditionReq::define_test_action ( mask_action_t mask_action)
 	mask.test_mask_action = mask_action;
 	return 0;
 }
+
+size_t conditionReq::size()
+{
+	   return job::size()+sizeof(conditionReq);
+}
