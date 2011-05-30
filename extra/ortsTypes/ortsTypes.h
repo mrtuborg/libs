@@ -36,7 +36,8 @@ typedef enum {err_result_ok        = 0,
               err_sock_error       = 10,
               err_not_found        = 11,
               err_not_allowed      = 12,
-              err_frame_incomplete = 13
+              err_frame_incomplete = 13,
+              err_equipment_trash  = 14
           } errType;
               
 extern char strErrTypes[][255];
