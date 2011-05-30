@@ -30,12 +30,12 @@ typedef struct cond_mask_t
 class conditionReq: public job {
 public:
 	conditionReq(DWORD id, DWORD next_test_success_id, DWORD next_test_fail_id);
-	conditionReq(const cond_job_t &header, const rcsCmd& cmd, const cond_mask_t& condition);
+	conditionReq(const job_type &header, const cond_job_t &cond_header, const rcsCmd& cmd, const cond_mask_t& condition);
 	conditionReq(const BYTE* encode_array);
-	conditionReq(const conditionReq& src);
+//  conditionReq(const conditionReq& src);
 	virtual ~conditionReq();
 
-	bool makeTest();
+	bool makeTest(char* value);
 
 	int define_test_mask   (cond_mask_t &mask);
 	int define_test_mask   (DWORD mask_offset, DWORD mask_len, DWORD mask_value);
@@ -55,7 +55,7 @@ public:
 private:
 	DWORD action; 				//  transit to opID, if opId == curr_opId state++;
 	 bool transmit_masked_value; // transmit to the next operation result value
-
+	 cond_job_t  cond_labels;
 	 cond_mask_t mask;
 
 };
