@@ -1,2 +1,1 @@
-lib_subdirs	:= job
-
+lib_subdirs	:= job task cron
