@@ -15,6 +15,18 @@ rcsCmd::rcsCmd(BYTE serviceId, BYTE funcId)
     // serviceId - for future purpose
 }
 
+rcsCmd::rcsCmd(rcsCmd& src)
+{
+    cmd                    = new rcsCmd_type;
+    cmd->func_id           = src.get_func_id();
+    cmd->func_params       = new BYTE[src.get_func_paramsLength()];
+	cmd->func_paramsLength = src.get_func_paramsLength();
+	cmd->crc16_signature   = src.get_crc_sign();
+	
+	memcpy(cmd->func_params, src.get_func_paramsPtr(), src.get_func_paramsLength());
+
+}
+
 rcsCmd::rcsCmd()
 {
     cmd=new rcsCmd_type;
@@ -23,12 +35,12 @@ rcsCmd::rcsCmd()
     cmd->func_paramsLength=0;
 }
 
-rcsCmd::rcsCmd(rcsCmd* cmdSrc)
-{
-	cmd=new rcsCmd_type;
-	this->encode(cmdSrc->get_func_id(), cmdSrc->get_func_paramsLength(), cmdSrc->get_func_paramsPtr());
-	makeSign();
-}
+//rcsCmd::rcsCmd(rcsCmd* cmdSrc)
+//{
+//	cmd=new rcsCmd_type;
+//	this->encode(cmdSrc->get_func_id(), cmdSrc->get_func_paramsLength(), cmdSrc->get_func_paramsPtr());
+//	makeSign();
+//}
 
 rcsCmd::~rcsCmd()
 {
