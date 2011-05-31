@@ -1,6 +1,7 @@
 #ifndef JOB_H
 #define JOB_H
 
+#include <extra/ortsTypes/ortsTypes.h>
 #include <netinet/in.h>
 #include <rcsLib/rcsCmd/rcsCmd.h>
 
