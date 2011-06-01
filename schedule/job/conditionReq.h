@@ -8,7 +8,7 @@
 #ifndef CONDITIONREQ_H_
 #define CONDITIONREQ_H_
 #include <iostream>
-
+#include <extra/ortsTypes/ortsTypes.h>
 #include "job.h"
 
 enum mask_action_t { mask_NOP = 0, mask_AND = 1, mask_OR = 2 };

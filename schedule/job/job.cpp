@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
 #include "job.h"
 
 
@@ -123,7 +124,7 @@ std::ostream& operator<< (std::ostream& stream, job &jobRef)
 	stream << "next object Id = " << jobRef.get_dwNextOpId()                         << std::endl;
 	stream << "start time     = " << jobRef.get_dwTimeStart()                        << std::endl;
 	stream << "finish time    = " << jobRef.get_dwTimeStart()+jobRef.get_dwTimeLong()<< std::endl;
-	stream << jobRef.rcscmd();
+//	stream << jobRef.rcscmd();
 
 	return stream;
 }
