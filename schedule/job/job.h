@@ -8,6 +8,7 @@ typedef struct in_addr in_addr_struct;
 typedef struct sockaddr_in sock_addr_in_struct;
 
 typedef struct job_type{
+		 BYTE packetNum;
         DWORD opId;
         DWORD nextOpId;
         DWORD timeStart;
