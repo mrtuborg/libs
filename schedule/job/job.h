@@ -34,7 +34,7 @@ class job{
 		DWORD get_dwTimeLong();
 		DWORD get_dwOpId();
 		DWORD get_dwNextOpId();
-		DWORD get_dwIPaddr(struct in_addr *out);
+		DWORD get_dwIPaddr(struct in_addr *out = 0);
 		 WORD get_wUdpPort();
 
 		 rcsCmd& rcscmd();
@@ -53,8 +53,6 @@ class job{
 	private:
 	      job_type jobReference;
 	        rcsCmd jobEntity;
-
-	        	  BYTE* work_result;
 
 };
 

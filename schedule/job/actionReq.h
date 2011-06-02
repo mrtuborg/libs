@@ -20,6 +20,8 @@ public:
 	actionReq();
 	size_t size();
 	virtual ~actionReq();
+	
+	//friend std::ostream& operator<< (std::ostream& stream, actionReq &actRef);
 
 
 private:

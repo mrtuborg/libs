@@ -36,6 +36,8 @@ class udpAction
 	bool isCmdExists();
 	const void* getParamPtr(WORD offset=0);
 	DWORD getParamLength();
+	
+	
 
 
 };

@@ -4,10 +4,15 @@
 #include "job.h"
 
 
-job::job(const job_type &header, const rcsCmd& cmd)
+job::job(const job_type &header, const rcsCmd& cmd): jobEntity(cmd)
 {
-	memcpy(&jobReference, &header, sizeof(job_type));
-	memcpy(&jobEntity, &cmd, sizeof(rcsCmd));
+	jobReference.packetNum = header.packetNum;
+	jobReference.opId = header.opId;
+	jobReference.nextOpId = header.nextOpId;
+	jobReference.timeStart = header.timeStart;
+	jobReference.timeLong = header.timeLong;
+	jobReference.serviceIPaddr = header.serviceIPaddr;
+	jobReference.serviceUdpPort = header.serviceUdpPort;
 }
 
 
@@ -49,7 +54,7 @@ WORD  job::get_cmd_paramsLength(void)
 
 DWORD job::get_dwIPaddr(struct in_addr* out)
 {
-	return 0;
+	return jobReference.serviceIPaddr;
 }
 
 //void job::dbgPrint()
@@ -120,10 +125,14 @@ std::istream& operator>> (std::istream& stream, job &jobRef)
 
 std::ostream& operator<< (std::ostream& stream, job &jobRef)
 {
+	stream << "packetNum      = " << jobRef.get_bPacketNum()						 << std::endl;
 	stream << "object Id      = " << jobRef.get_dwOpId()                             << std::endl;
 	stream << "next object Id = " << jobRef.get_dwNextOpId()                         << std::endl;
 	stream << "start time     = " << jobRef.get_dwTimeStart()                        << std::endl;
 	stream << "finish time    = " << jobRef.get_dwTimeStart()+jobRef.get_dwTimeLong()<< std::endl;
+	stream << "IP			  = " << jobRef.get_dwIPaddr()							 << std::endl;
+	stream << "UDP			  = " << jobRef.get_wUdpPort()							 << std::endl;
+	
 //	stream << jobRef.rcscmd();
 
 	return stream;
