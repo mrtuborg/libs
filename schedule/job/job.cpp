@@ -129,7 +129,7 @@ std::istream& operator>> (std::istream& stream, job &jobRef)
 
 std::ostream& operator<< (std::ostream& stream, job &jobRef)
 {
-	stream << "packetNum      = " << jobRef.get_bPacketNum()						 << std::endl;
+	stream << "packetNum      = " << (int)jobRef.get_bPacketNum()						 << std::endl;
 	stream << "object Id      = " << jobRef.get_dwOpId()                             << std::endl;
 	stream << "next object Id = " << jobRef.get_dwNextOpId()                         << std::endl;
 	stream << "start time     = " << jobRef.get_dwTimeStart()                        << std::endl;

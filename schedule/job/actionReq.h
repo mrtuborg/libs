@@ -24,7 +24,7 @@ public:
 	//friend std::ostream& operator<< (std::ostream& stream, actionReq &actRef);
 
 
-private:
+//private:
 
 	int encode(BYTE*);
 	int decode(BYTE*);
