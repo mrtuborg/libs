@@ -86,6 +86,10 @@ WORD job::get_wUdpPort()
 {
 	return jobReference.serviceUdpPort;
 }
+BYTE job::get_bPacketNum()
+{
+	return jobReference.packetNum;
+}
 
 DWORD job::get_dwTimeStart()
 {

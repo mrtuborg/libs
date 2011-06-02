@@ -47,10 +47,9 @@ int conditionReq::encode(BYTE* array)
 {
 	    job::encode(array);
 	    array += job::size();
+	    memcpy(array, &cond_labels, sizeof(cond_job_t));
+	    array += sizeof(cond_job_t);
 	    memcpy(array, &mask,   sizeof(cond_mask_t));
-	    array += sizeof(cond_mask_t);
-	    memcpy(array, &action, sizeof(DWORD));
-
 	    return 0;
 }
 
@@ -58,9 +57,9 @@ int conditionReq::decode(BYTE* array)
 {
 		job::decode(array);
 		array += job::size();
-		memcpy(&mask,   array, sizeof(cond_mask_t));
-		array += sizeof(cond_mask_t);
-		memcpy(&action, array, sizeof(DWORD));
+		memcpy(&cond_labels,   array, sizeof(cond_job_t));
+		array += sizeof(cond_job_t);
+		memcpy(&mask, array, sizeof(cond_mask_t));
 
 		return 0;
 }
