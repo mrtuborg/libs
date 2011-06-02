@@ -13,7 +13,6 @@ union m_semun
 	struct seminfo *__buf;
 };
 
-
 extern int binary_semaphore_allocation (key_t key, int sem_flags);
 extern int binary_semaphore_deallocate (int semid);
 extern int binary_semaphore_initialize (int semid);

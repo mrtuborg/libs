@@ -1,3 +1,6 @@
+#ifndef RCSCMD_H
+#define RCSCMD_H
+
 #define MAX_RCS_PARAMS_LENGTH 1024
 
 typedef struct rcsCmd_type {
@@ -45,3 +48,5 @@ void* get_func_paramsPtr(WORD offset=0) const;
 
  bool checkSign();
 } __attribute__ ((packed));
+
+#endif

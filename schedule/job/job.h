@@ -30,6 +30,7 @@ class job{
 		const BYTE* get_cmd_paramsPtr(size_t offset = 0);
 		WORD  get_cmd_paramsLength(void);
 
+		 BYTE get_bPacketNum();
 		DWORD get_dwTimeStart();
 		DWORD get_dwTimeLong();
 		DWORD get_dwOpId();
