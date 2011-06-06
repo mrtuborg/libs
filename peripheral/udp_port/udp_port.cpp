@@ -185,6 +185,8 @@ errType udp_port::sendData(in_addr remote_ip, BYTE *buf, size_t len)
 
     ssize_t sended=0;
 
+    if (len == 0) return err_result_ok;
+
     printf("Отправка пакета: содержимое [");
     for (size_t i=0; i<len; i++) printf("%.2X ", buf[i]);
     printf("]\n\t\t\t адресат: %s, сокет %d/udp\n\n",inet_ntoa(remote_ip),ntohs(ip_addr.sin_port));
