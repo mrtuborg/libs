@@ -1,6 +1,7 @@
 #ifndef JOB_H
 #define JOB_H
 
+#include <extra/ortsTypes/ortsTypes.h>
 #include <netinet/in.h>
 #include <rcsLib/rcsCmd/rcsCmd.h>
 
@@ -8,6 +9,7 @@ typedef struct in_addr in_addr_struct;
 typedef struct sockaddr_in sock_addr_in_struct;
 
 typedef struct job_type{
+		 BYTE packetNum;
         DWORD opId;
         DWORD nextOpId;
         DWORD timeStart;
@@ -28,11 +30,12 @@ class job{
 		const BYTE* get_cmd_paramsPtr(size_t offset = 0);
 		WORD  get_cmd_paramsLength(void);
 
+		 BYTE get_bPacketNum();
 		DWORD get_dwTimeStart();
 		DWORD get_dwTimeLong();
 		DWORD get_dwOpId();
 		DWORD get_dwNextOpId();
-		DWORD get_dwIPaddr(struct in_addr *out);
+		DWORD get_dwIPaddr(struct in_addr *out = 0);
 		 WORD get_wUdpPort();
 
 		 rcsCmd& rcscmd();
@@ -51,8 +54,6 @@ class job{
 	private:
 	      job_type jobReference;
 	        rcsCmd jobEntity;
-
-	        	  BYTE* work_result;
 
 };
 

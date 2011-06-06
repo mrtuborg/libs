@@ -8,7 +8,7 @@
 #ifndef CONDITIONREQ_H_
 #define CONDITIONREQ_H_
 #include <iostream>
-
+#include <extra/ortsTypes/ortsTypes.h>
 #include "job.h"
 
 enum mask_action_t { mask_NOP = 0, mask_AND = 1, mask_OR = 2 };
@@ -57,7 +57,7 @@ public:
 	size_t size();
 
 private:
-	DWORD action; 				//  transit to opID, if opId == curr_opId state++;
+	//DWORD action; 				//  transit to opID, if opId == curr_opId state++;
 	// bool transmit_masked_value; // transmit to the next operation result value
 	 cond_job_t  cond_labels;
 	 cond_mask_t mask;

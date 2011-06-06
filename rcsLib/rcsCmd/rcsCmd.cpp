@@ -15,6 +15,18 @@ rcsCmd::rcsCmd(BYTE serviceId, BYTE funcId)
     // serviceId - for future purpose
 }
 
+rcsCmd::rcsCmd(const rcsCmd& src)
+{
+    cmd                    = new rcsCmd_type;
+    cmd->func_id           = src.get_func_id();
+    cmd->func_params       = new BYTE[src.get_func_paramsLength()];
+	cmd->func_paramsLength = src.get_func_paramsLength();
+	cmd->crc16_signature   = src.get_crc_sign();
+	
+	memcpy(cmd->func_params, src.get_func_paramsPtr(), src.get_func_paramsLength());
+
+}
+
 rcsCmd::rcsCmd()
 {
     cmd=new rcsCmd_type;
@@ -23,12 +35,12 @@ rcsCmd::rcsCmd()
     cmd->func_paramsLength=0;
 }
 
-rcsCmd::rcsCmd(rcsCmd* cmdSrc)
-{
-	cmd=new rcsCmd_type;
-	this->encode(cmdSrc->get_func_id(), cmdSrc->get_func_paramsLength(), cmdSrc->get_func_paramsPtr());
-	makeSign();
-}
+//rcsCmd::rcsCmd(rcsCmd* cmdSrc)
+//{
+//	cmd=new rcsCmd_type;
+//	this->encode(cmdSrc->get_func_id(), cmdSrc->get_func_paramsLength(), cmdSrc->get_func_paramsPtr());
+//	makeSign();
+//}
 
 rcsCmd::~rcsCmd()
 {
@@ -47,7 +59,7 @@ rcsCmd::~rcsCmd()
 //}
 
 
-BYTE rcsCmd::get_func_id()
+BYTE rcsCmd::get_func_id() const
 {
     return cmd->func_id;
 }
@@ -243,7 +255,7 @@ errType rcsCmd::encode(BYTE func_num, WORD par_length, const void* data)
 }
 
 
-WORD rcsCmd::get_func_paramsLength()
+WORD rcsCmd::get_func_paramsLength() const
 {
      return cmd->func_paramsLength;
 }
@@ -259,17 +271,17 @@ WORD rcsCmd::getSignPos()
      return cmd->func_paramsLength+sizeof(cmd->func_id)+sizeof(cmd->func_paramsLength);
 }
 
-WORD rcsCmd::getCmdLength()
+WORD rcsCmd::getCmdLength() const
 {
      return cmd->func_paramsLength+sizeof(cmd->func_id)+sizeof(cmd->crc16_signature)+sizeof(cmd->func_paramsLength);
 }
   
-const void* rcsCmd::get_func_paramsPtr(WORD offset)
+ void* rcsCmd::get_func_paramsPtr(WORD offset) const
 {
     return ((BYTE*)cmd->func_params+offset);
 }
 
-WORD rcsCmd::get_crc_sign()
+WORD rcsCmd::get_crc_sign() const
 {
     return cmd->crc16_signature;
 }

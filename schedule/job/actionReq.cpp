@@ -4,6 +4,7 @@
  *  Created on: May 20, 2011
  *      Author: tuborg
  */
+
 #include <string.h>
 #include "actionReq.h"
 
@@ -47,5 +48,6 @@ int actionReq::decode(BYTE* array)
 
 size_t actionReq::size()
 {
-	   return job::size()+sizeof(actionReq);
+	return job::size();
 }
+

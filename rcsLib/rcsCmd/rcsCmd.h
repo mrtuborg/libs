@@ -1,3 +1,6 @@
+#ifndef RCSCMD_H
+#define RCSCMD_H
+
 #define MAX_RCS_PARAMS_LENGTH 1024
 
 typedef struct rcsCmd_type {
@@ -12,21 +15,23 @@ class rcsCmd {
     rcsCmd_type* cmd;
     
 public:
- rcsCmd(rcsCmd* cmdSrc);
+ //rcsCmd(rcsCmd* cmdSrc);
+ explicit rcsCmd(const rcsCmd& src);
+
  rcsCmd(BYTE serviceId, BYTE funcId);
  rcsCmd();
 
  ~rcsCmd();
 
- BYTE get_func_id();
- WORD get_func_paramsLength();
+ BYTE get_func_id() const;
+ WORD get_func_paramsLength() const;
  
  WORD getDataPos();
  WORD getSignPos();
- WORD getCmdLength();
+ WORD getCmdLength() const;
  
- WORD get_crc_sign();
- const void* get_func_paramsPtr(WORD offset=0);
+ WORD get_crc_sign() const;
+void* get_func_paramsPtr(WORD offset=0) const;
 
 
  void dbgPrint();
@@ -43,3 +48,5 @@ public:
 
  bool checkSign();
 } __attribute__ ((packed));
+
+#endif

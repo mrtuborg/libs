@@ -8,6 +8,8 @@
 #ifndef ACTIONREQ_H_
 #define ACTIONREQ_H_
 
+#include <extra/ortsTypes/ortsTypes.h>
+#include <iostream>
 #include "job.h"
 
 class actionReq: public job
@@ -18,9 +20,11 @@ public:
 	actionReq();
 	size_t size();
 	virtual ~actionReq();
+	
+	//friend std::ostream& operator<< (std::ostream& stream, actionReq &actRef);
 
 
-private:
+//private:
 
 	int encode(BYTE*);
 	int decode(BYTE*);

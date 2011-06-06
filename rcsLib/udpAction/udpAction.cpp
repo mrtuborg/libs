@@ -35,10 +35,10 @@ void * udpListenerThread(void* user)
 
 udpAction::udpAction(BYTE type, WORD port, const char* ip, DWORD setTimeOut_sec, DWORD setTimeOut_ms)
 {
-    actionType=type;
-    udpPort=new udp_port(port);
+    actionType = type;
+    udpPort = new udp_port(port);
     remote_ip.s_addr=inet_addr(ip);
-    Command=new rcsCmd;
+    Command = new rcsCmd;
     //dataLen=0;
     this->timeOut_ms=setTimeOut_ms;
     this->timeOut_sec=setTimeOut_sec;
@@ -66,7 +66,7 @@ errType udpAction::writeDataAsCmd(rcsCmd *data)
     errType result=err_not_init;
     delete Command;
 
-    Command = new rcsCmd(data);
+    Command = new rcsCmd(*data);
 
     return result;
 }
@@ -106,7 +106,7 @@ errType udpAction::readDataAsCmd(rcsCmd **data_out)
     errType result=err_not_init;
     if (Command == 0 ) result=err_result_error;
     else {
-	*data_out=Command;
+		*data_out = new rcsCmd(*Command);
 	result=err_result_ok;
     }
     
@@ -156,7 +156,7 @@ errType udpAction::receiveEvent()
     		data=new BYTE[*sz];
     		result=udpPort->readData(data, sz);
 	
-    		if (Command==0) Command=new rcsCmd;
+    		if (Command == 0) Command=new rcsCmd;
     		Command->encode(data);
     		delete []data;
     }
@@ -173,7 +173,7 @@ const void *udpAction::getParamPtr(WORD offset)
 
 bool udpAction::isCmdExists()
 {
-    if (Command==0) return false;
+    if (Command == 0) return false;
     else return true;
 }
 
@@ -187,7 +187,7 @@ errType udpAction::processAction()
 	    break;
     case ACTION_RECEIVE:
 	    delete Command;
-	    Command=0;
+	    Command = 0;
 	    
 	    udpPort->open_port(true);
 	    //int ret=
@@ -195,7 +195,7 @@ errType udpAction::processAction()
 	    waitRecvEvent();
 	    
 	    udpPort->close_port();
-	    if (Command==0) result=err_timeout;
+	    if (Command == 0) result=err_timeout;
 	    else result=err_result_ok;
 	    break;
     }
