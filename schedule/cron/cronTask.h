@@ -20,7 +20,7 @@ public:
 			 unsigned length_sec,
 			 std::string &command);
 
-	cronTask(cronTask* cron);
+	cronTask(const cronTask& cron);
 
 	cronTask();
 	~cronTask();
@@ -31,6 +31,12 @@ public:
 	friend fstream &operator<<(fstream &stream, const cronTask &task);
 	//friend ifstream &operator>>(ifstream &stream, cronTask &task);
 
+	int    get_hour()    const   { return hour;    };
+	int    get_minute()  const   { return minute;  };
+	string get_command() const   { return command; };
+	int    get_mday()    const   { return mday;    };
+	int    get_wday()    const   { return wday;    };
+	int    get_month()   const   { return month;   };
 
 private:
 		int hour, minute, mday, month, wday;

@@ -63,87 +63,22 @@ errType cronTask::create(std::string &textLine)
 	return err_result_ok;
 }
 
-cronTask::cronTask(cronTask* cron)
+cronTask::cronTask(const cronTask& cron)
 {
-
+		this->hour    = cron.get_hour();
+		this->minute  = cron.get_minute();
+		this->command = cron.get_command();
+		this->mday    = cron.get_mday();
+		this->wday    = cron.get_wday();
+		this->month   = cron.get_month();
 }
 
 bool cronTask::isValid()
 {
-	return false;
+	// TODO: Add validation of cron!
+	return true;
 }
-//errType cronTask::create(task* newTask)
-//{
-//  errType result = err_result_ok;
-//  struct tm *ts;
-//  time_t timeStart(newJob->get_dwTimeStart());
-//  /// 1. Define start time for cron task
-// // printf("\n !!!!! TimeStart %d", timeStart);
-//  ts = localtime(&timeStart);
-//  /// 2. Filling cron task
-//  //WORD cmdLen(newJob->cmd()->getCmdLength());
-//  in_addr in;
-//  //	in.s_addr = htonl(inet_addr("127.0.0.1")); // ip_address of ss_Service_1
-//  in.s_addr = inet_addr("127.0.0.1"); // ip_address of ss_Service_1
-//
-//  char *ipaddr = (inet_ntoa(in));
-//  int uport(get_cpListenerPortNum()); // client udp_port of ss_Service_1
-//
-//  int delay = ts->tm_sec;
-//
-//  string strCmd(format("rcsSend -i%s -u%d -s%d -d\"", ipaddr, uport, delay));
-//
-//  //DWORD id = newJob->get_dwObjId();
-//  //strCmd.append(format("%.8X", id));
-//
-//  //в качестве параметра - RcsCmd packet
-//  rcsCmd *packet = new rcsCmd(1, 8);
-//
-//  BYTE data[5];
-//  data[0] = 0; // TODO: Indetifier of packet data
-//  *(DWORD*) (data + 1) = newJob->get_dwOpId();
-//
-//  WORD len = 5;
-//
-//  packet->encode(8, len, data);
-//  packet->makeSign();
-//
-//  //BYTE* rcsCmdCommand = new BYTE[sizeof(BYTE) + sizeof(DWORD) + packet->get_func_paramsLength() + sizeof(WORD)]; //память под команду для расписания
-//  BYTE* rcsCmdCommand = new BYTE[sizeof(BYTE) + sizeof(WORD)
-//      + packet->get_func_paramsLength() + sizeof(WORD)]; //память под команду для расписания
-//
-//
-//  *(BYTE*) rcsCmdCommand = packet->get_func_id();
-//  *(DWORD*) (rcsCmdCommand + 1) = packet->get_func_paramsLength();
-//  memcpy(rcsCmdCommand + 3, packet->get_func_paramsPtr(0),
-//      packet->get_func_paramsLength());
-//  *(WORD*) (rcsCmdCommand + 3 + packet->get_func_paramsLength())
-//      = packet->get_crc_sign();
-//
-//  for (size_t i = 0; i < (sizeof(BYTE) + sizeof(WORD)
-//      + packet->get_func_paramsLength() + sizeof(WORD)); i++)
-//    {
-//      strCmd.append(format("%.2X ", ((BYTE *) rcsCmdCommand)[i]));
-//    }
-//
-//  delete packet;
-//  delete rcsCmdCommand;
-//
-//  strCmd.append("\"");
-//
-//  /// 3. Create cronTask object
-//  task->create(ts->tm_hour, ts->tm_min,
-//      ts->tm_mday,
-//      ts->tm_mon + 1,
-//      ts->tm_wday, //+1 - у крона месяц 1..12, у unixtime 0..11
-//      (unsigned long) newJob->get_dwOpId(),
-//      (unsigned long) newJob->get_dwNextOpId(),
-//      (unsigned) newJob->get_dwTimeLong(), strCmd);
-//
-//  cout << *task;
-//
-//  return result;
-//}
+
 
 cronTask::cronTask()
 {

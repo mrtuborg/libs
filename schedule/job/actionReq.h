@@ -15,14 +15,17 @@
 class actionReq: public job
 {
 public:
-	actionReq(const job_type &header, const rcsCmd& cmd);
+	actionReq(const actionReq& jobEntity);
+	actionReq(const job_type &header, const rcsCmd_type& cmd);
 	actionReq(const BYTE* encode_array);
 	actionReq();
-	size_t size();
+	size_t size() const;
 	virtual ~actionReq();
 	
 	//friend std::ostream& operator<< (std::ostream& stream, actionReq &actRef);
+	rcsCmd& get_entity_Ptr();
 
+	void dbgPrint();
 
 //private:
 

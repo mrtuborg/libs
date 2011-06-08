@@ -7,9 +7,14 @@
 #include <string.h>
 #include "conditionReq.h"
 
+conditionReq::conditionReq()
+{
+
+}
+
 conditionReq::conditionReq(const job_type    &header,
                            const cond_job_t  &cond_header,
-                           const rcsCmd      &cmd,
+                           const rcsCmd_type &cmd,
                            const cond_mask_t &condition):
 
         job(header, cmd),
@@ -19,24 +24,24 @@ mask(condition)
 
 }
 
-conditionReq::conditionReq(const BYTE *array) {
-	job_type		header;
-	cond_job_t  cond_header;
-	cond_mask_t cond;
-	rcsCmd cmd;
-
-	int offset = 0;
-	memcpy(&header, array, sizeof(job_type));
-	offset += sizeof(job_type);
-	memcpy(&cond_header, array, sizeof(cond_job_t));
-	offset += sizeof(cond_job_t);
-	cmd.encode(array+offset);
-	offset += cmd.getCmdLength();
-	memcpy(&cond, array+offset,sizeof(cond_mask_t));
-
-	conditionReq(header, cond_header, cmd, cond);
-
-}
+//conditionReq::conditionReq(const BYTE *array) {
+//	job_type		header;
+//	cond_job_t  cond_header;
+//	cond_mask_t cond;
+//	rcsCmd cmd;
+//
+//	int offset = 0;
+//	memcpy(&header, array, sizeof(job_type));
+//	offset += sizeof(job_type);
+//	memcpy(&cond_header, array, sizeof(cond_job_t));
+//	offset += sizeof(cond_job_t);
+//	cmd.encode(array+offset);
+//	offset += cmd.getCmdLength();
+//	memcpy(&cond, array+offset,sizeof(cond_mask_t));
+//
+//	conditionReq(header, cond_header, cmd, cond);
+//
+//}
 
 
 conditionReq::~conditionReq() {
@@ -132,7 +137,17 @@ int conditionReq::define_test_action ( mask_action_t mask_action)
 	return 0;
 }
 
-size_t conditionReq::size()
+size_t conditionReq::size() const
 {
 	   return job::size()+sizeof(conditionReq);
+}
+
+rcsCmd& conditionReq::get_entity_Ptr()
+{
+		return job::get_entity_Ptr();
+}
+
+void conditionReq::dbgPrint()
+{
+	printf("conditionReq\n");
 }

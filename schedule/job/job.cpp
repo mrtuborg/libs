@@ -4,8 +4,9 @@
 #include "job.h"
 
 
-job::job(const job_type &header, const rcsCmd& cmd): jobEntity(cmd)
+job::job(const job_type &header, const rcsCmd_type& cmd)
 {
+	jobEntity = cmd;
 	jobReference.packetNum = header.packetNum;
 	jobReference.opId = header.opId;
 	jobReference.nextOpId = header.nextOpId;
@@ -13,6 +14,7 @@ job::job(const job_type &header, const rcsCmd& cmd): jobEntity(cmd)
 	jobReference.timeLong = header.timeLong;
 	jobReference.serviceIPaddr = header.serviceIPaddr;
 	jobReference.serviceUdpPort = header.serviceUdpPort;
+
 }
 
 
@@ -23,6 +25,7 @@ job::job(DWORD id)
 
 job::~job()
 {
+	printf("destructor\n");
 }
 
 int job::define_init_service(const sockaddr_in& service_addr)
@@ -32,7 +35,7 @@ int job::define_init_service(const sockaddr_in& service_addr)
 	return 0;
 }
 
-size_t job::size()
+size_t job::size() const
 {
 	    return sizeof(job_type)+jobEntity.getCmdLength();
 }
@@ -70,7 +73,7 @@ DWORD job::get_dwIPaddr(struct in_addr* out)
 int job::encode(BYTE* array)
 {
 		WORD jobReferenceSize = sizeof (job_type);
-	    WORD rcsCmdSize       = sizeof (rcsCmd);
+	    //WORD rcsCmdSize       = sizeof (rcsCmd);
 
 	    memcpy(&jobReference, array, jobReferenceSize);
 	    jobEntity.encode(array+jobReferenceSize);
@@ -80,7 +83,7 @@ int job::encode(BYTE* array)
 int job::decode(BYTE* array)
 {
 		WORD jobReferenceSize = sizeof(job_type);
-	    WORD rcsCmdSize       = sizeof (rcsCmd);
+	    //WORD rcsCmdSize       = sizeof (rcsCmd);
 
 	    memcpy(array,&jobReference, jobReferenceSize);
 	    jobEntity.decode(array+jobReferenceSize);
@@ -96,7 +99,7 @@ BYTE job::get_bPacketNum()
 	return jobReference.packetNum;
 }
 
-DWORD job::get_dwTimeStart()
+DWORD job::get_dwTimeStart() const
 {
 	   return this->jobReference.timeStart;
 }
@@ -121,6 +124,16 @@ rcsCmd& job::rcscmd() // TODO: need return a const !!!
 	  return jobEntity;
 }
 
+const job_type& job::get_header_Ptr()
+{
+	return jobReference;
+}
+
+rcsCmd& job::get_entity_Ptr()
+{
+	return jobEntity;
+}
+
 std::istream& operator>> (std::istream& stream, job &jobRef)
 {
 
@@ -141,3 +154,4 @@ std::ostream& operator<< (std::ostream& stream, job &jobRef)
 
 	return stream;
 }
+

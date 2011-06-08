@@ -31,9 +31,10 @@ typedef struct cond_mask_t
 
 class conditionReq: public job {
 public:
+	conditionReq();
 	conditionReq(DWORD id, DWORD timeout_watchdog_sec, DWORD next_test_success_id, DWORD next_test_fail_id, DWORD next_test_timeout);
-	conditionReq(const job_type &header, const cond_job_t &cond_header, const rcsCmd& cmd, const cond_mask_t& condition);
-	conditionReq(const BYTE* encode_array);
+	conditionReq(const job_type &header, const cond_job_t &cond_header, const rcsCmd_type& cmd, const cond_mask_t& condition);
+//	conditionReq(const BYTE* encode_array);
 //  conditionReq(const conditionReq& src);
 	virtual ~conditionReq();
 
@@ -54,7 +55,11 @@ public:
 	int encode(BYTE*);
 	int decode(BYTE*);
 
-	size_t size();
+	void dbgPrint();
+
+	rcsCmd& get_entity_Ptr();
+
+	size_t size() const;
 
 private:
 	//DWORD action; 				//  transit to opID, if opId == curr_opId state++;

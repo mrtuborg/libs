@@ -20,7 +20,7 @@ typedef struct job_type{
 
 class job{
 	public:
-		job(const job_type &header, const rcsCmd& cmd);
+		job(const job_type &header, const rcsCmd_type& cmd);
 		job(DWORD id = 0);
 		virtual ~job();
 
@@ -31,21 +31,25 @@ class job{
 		WORD  get_cmd_paramsLength(void);
 
 		 BYTE get_bPacketNum();
-		DWORD get_dwTimeStart();
+		DWORD get_dwTimeStart() const;
 		DWORD get_dwTimeLong();
 		DWORD get_dwOpId();
 		DWORD get_dwNextOpId();
 		DWORD get_dwIPaddr(struct in_addr *out = 0);
 		 WORD get_wUdpPort();
 
+		virtual rcsCmd& get_entity_Ptr();
+		const job_type& get_header_Ptr();
+
 		 rcsCmd& rcscmd();
 
 
-		virtual size_t size();
+		virtual size_t size() const =0;
 
-		friend std::ostream& operator<< (std::ostream& stream, job &jobRef);
+		friend std::ostream& operator<<(std::ostream& stream, job &jobRef);
 		friend std::istream& operator>>(std::istream& stream,  job &jobRef);
 
+		virtual void dbgPrint()=0;
 
   protected:
 		virtual int encode(BYTE*);

@@ -17,12 +17,11 @@ rcsCmd::rcsCmd(BYTE serviceId, BYTE funcId)
 
 rcsCmd::rcsCmd(const rcsCmd& src)
 {
-    cmd                    = new rcsCmd_type;
+    cmd              	  = new rcsCmd_type;
     cmd->func_id           = src.get_func_id();
     cmd->func_params       = new BYTE[src.get_func_paramsLength()];
 	cmd->func_paramsLength = src.get_func_paramsLength();
 	cmd->crc16_signature   = src.get_crc_sign();
-	
 	memcpy(cmd->func_params, src.get_func_paramsPtr(), src.get_func_paramsLength());
 
 }
@@ -312,4 +311,26 @@ bool rcsCmd::checkSign()
 //  */  
     if (test_sign==get_crc_sign()) result=true;
     return result;
+}
+
+rcsCmd& rcsCmd::operator= (const rcsCmd_type &rhs)
+{
+	//if (this == rhs)
+	//{
+		cmd->func_id           = rhs.func_id;
+		cmd->func_paramsLength = rhs.func_paramsLength;
+		cmd->crc16_signature   = rhs.crc16_signature;
+		delete [] (BYTE*)cmd->func_params;
+		cmd->func_params = new BYTE[cmd->func_paramsLength];
+		memcpy(cmd->func_params, rhs.func_params, cmd->func_paramsLength);
+
+	//}
+
+	return *this;
+}
+
+
+const rcsCmd_type& rcsCmd::get_cmd()
+{
+		return *cmd;
 }

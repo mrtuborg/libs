@@ -31,7 +31,7 @@
 
 cronTab::cronTab() {
 
-        cronFile.open("cronfile.txt", ios::in | ios::out);
+    cronFile.open("cronfile.txt", ios::in | ios::out);
 
 	cronFile.seekp(0, ios::end);
 	writePosition=cronFile.tellp();
@@ -40,6 +40,7 @@ cronTab::cronTab() {
 	readPosition=cronFile.tellg();
 	cronFile.close();
 
+	printf("system(\"crontab -r\");\n");
 	system("crontab -r");
 	this->clearCronFile();
 }
@@ -65,6 +66,7 @@ cronTab::~cronTab() {
 
 errType cronTab::addTask(cronTask* task)
 {
+	printf("push_back to the end of taskList\n");
 	taskList.push_back(task);
 	return err_result_ok;
 }
@@ -100,15 +102,18 @@ errType cronTab::addToCronFile()
 	list <cronTask*>::iterator iter;
 
 	int wr=0;
-
+		printf("open cronfile.txt\n");
         cronFile.open("cronfile.txt", ios::in | ios::out | ios::trunc);
 	if (cronFile.is_open()) {
-
+		printf("cronfile.txt is opened\n");
+		this->dbgPrint();
 		for (iter=taskList.begin(); iter!=taskList.end(); ++iter)
 		{
 
 			printf("wr=%d\n",wr++);
+
 			task=(*iter);
+			printf("Put to the file:\n");
 			cout << *task << endl;
 			cronFile << *task << endl;
 
@@ -118,9 +123,10 @@ errType cronTab::addToCronFile()
 
 		writePosition=cronFile.tellp();
 		cronFile.close();
+		printf("system(\"crontab cronfile.txt\");\n");
 		system("crontab cronfile.txt");
 		result=err_result_ok;
-	}
+	} else printf("openning file error\n");
 
 	cout << "writePosition = " << writePosition << endl;
 	return result;
@@ -167,7 +173,11 @@ int cronTab::getFromCronFile()
 
 void cronTab::dbgPrint()
 {
-		//cout << hour << ":" << minute << ", " << mday << "/" << month << "[" << wday << "]"<< " cmd: " << command << endl;
-
+	list <cronTask*>::iterator iter;
+	cout << "cronTab size = " << taskList.size() << std::endl;
+	for (iter=taskList.begin(); iter!=taskList.end(); ++iter)
+	{
+		cout << (*iter);
+	}
 }
 

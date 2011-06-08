@@ -13,14 +13,13 @@
 #include <schedule/cron/cronTask.h>
 
 class task {
-
 	  job* op;
-
       BYTE* workResult;
       WORD  workResultLength;
       BYTE  state; // 0 - initialized, 1 - running, 2 - completed
+
 public:
-	task(job& jobRequest);
+	task();
 	virtual ~task();
 
 	void encode(BYTE*);
@@ -36,9 +35,12 @@ public:
 
 	job* get_job();
 
-	cronTask*  get_as_cronTask();
+	cronTask*  get_as_cronTask(unsigned int udp_port_num);
 
 	void dbgPrint();
+
+	const task& operator= (const actionReq&    jobRequest);
+	const task& operator= (const conditionReq& jobRequest);
 
 };
 

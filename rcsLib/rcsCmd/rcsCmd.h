@@ -16,7 +16,7 @@ class rcsCmd {
     
 public:
  //rcsCmd(rcsCmd* cmdSrc);
- explicit rcsCmd(const rcsCmd& src);
+ rcsCmd(const rcsCmd& src);
 
  rcsCmd(BYTE serviceId, BYTE funcId);
  rcsCmd();
@@ -43,10 +43,13 @@ void* get_func_paramsPtr(WORD offset=0) const;
  errType encode(const BYTE* dataBlock);
  errType encode(BYTE funcId, WORD len=0, const void* data=0);
  
+ rcsCmd& operator= (const rcsCmd_type &rhs);
  
  errType makeSign();
-
  bool checkSign();
+
+ const rcsCmd_type& get_cmd();
+
 } __attribute__ ((packed));
 
 #endif
